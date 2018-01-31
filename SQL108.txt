@@ -1,0 +1,3153 @@
+select * from t_jti_201801_price$
+select max(patch_no) from t_pos_product_13011
+
+23560
+
+--UPDATE A 
+SET A.UNIT_PRICE=b.new,A.PATCH_NO=23565
+,A.BUYER='201801jit'
+FROM T_POS_PRODUCT_13011 A INNER JOIN t_jti_201801_price$ B
+ON A.UPC_UNIT COLLATE Korean_Wansung_CI_AS=B.upc
+
+==========고객 세일 비교==============
+select
+a.client_id,a.amt1,a.cnt1,b.amt1,b.cnt1 
+,c.customer_name,c.owner_name,c.address,c.city,c.post_code,c.telephone_number
+
+from
+(
+select g.client_id,sum(amount)as amt1,count(*)as cnt1
+from t_tran_general g
+where (g.z1_date>= '2016-01-01' and g.z1_date <='2016-12-31') and g.store='2'
+and g.amount is not null
+group by g.client_id
+) a 
+left join 
+(
+select g.client_id,sum(amount)as amt1,count(*)as cnt1
+from t_tran_general g
+where (g.z1_date>= '2017-01-01' and g.z1_date <='2017-12-31') and g.store='2'
+and g.amount is not null
+group by g.client_id
+) b ON
+a.client_id=b.client_id
+left join [kBACMS].dbo.erp_customerinformation c
+on a.client_id=c.customer_number
+where c.customer_name is not null
+order by a.amt1 desc
+===========재고관리 및 재고조사 2018===========
+select  
+s.supplier,a.supp_code,
+a.upc_ut,a.upc_box,a.upc_case,
+a.iname,a.desp,a.size,a.boxpack,a.casepack,a.s_unit,
+a.idate,a.upc_date
+from t_product a join t_supplier s
+on a.supp_code=s.supp_code
+where substring(a.idate,1,2)='18'
+order by s.supplier
+
+select  DISTINCT
+s.supplier,a.supp_code
+INTO T_INV_UPC_SUPPLIER_20180117
+from t_product a join t_supplier s
+on a.supp_code=s.supp_code
+
+where substring(a.idate,1,2)='18'
+order by s.supplier
+============================================
+select * from t_tran_general 
+where store='2' --and station='3'
+and (z1_date='2017-12-05')
+
+select store,station,sum(net_sales) from
+t_tran_general 
+where store='2' --and station='3'
+and (z1_date ='2017-12-06' )
+group by store,station
+
+select g.store,g.station,d.prod2,sum(d.qty*uint_price) from t_tran_details d inner join t_tran_general g 
+on d.merchant_id collate Korean_Wansung_CI_AS=g.merchant_id
+where g.store='2' --and g.station='3'
+and (g.z1_date = '2017-12-04' )
+group by d.prod2,g.store,g.station
+
+select top 10 * from z1_save_data order by z1_date desc
+=================
+select a.* from t_32368 a inner join t_tran_general b
+on a.merchant_id=b.merchant_id
+
+select a.merchant_id, b.* from t_32368 a inner join t_tran_details b
+on a.merchant_id collate Korean_Wansung_CI_AS=b.merchant_id
+
+--delete from t_tran_details 
+where 
+merchant_id in 
+('K17080932029',
+'K17080932031',
+'K17092132043',
+'K17080932031',
+'K17100332045',
+'K17092132043',
+'K17101932073',
+'K17100332045',
+'K17103133041',
+'K17103133044',
+'K17101932073')
+
+
+select * from T_2017_11_CUSTDAY_AGAIN_UP
+where sp_end>='2017-11-17'
+--delete t_201708_caday$ where upc_unit is null
+select * from t_pos_product_13011 where buyer='6cust'
+
+select max(patch_no)  from t_pos_product_13011
+
+23183
+--UPDATE A 
+SET A.SPECIAL_UNIT_PRICE=B.SPECIAL_UNIT_PRICE,A.SP_BEGIN=B.SP_BEGIN,A.SP_END=B.SP_END,A.PATCH_NO=23190
+,A.BUYER=B.BUYER
+FROM T_POS_PRODUCT_13011 A INNER JOIN T_2017_11_CUSTDAY_AGAIN_UP B
+ON A.UPC_UNIT COLLATE Korean_Wansung_CI_AS=B.UPC_UNIT
+where B.sp_end>='2017-11-17'==2017년 11월 고객감사 준비 작업===
+select * from t_2017_11_custday$ order by id
+SELECT MAX(PATCH_NO) FROM T_POS_PRODUCT_13011 --22803
+--UPDATE t_2017_11_custday$ SET PATCH_NO=22830
+--drop table t_2017_11_custday$
+
+select a.upc_unit AS UPC_UNIT2,b.* into T_2017_11_CUSTDAY_AGAIN_UP from
+t_2017_11_custday$ a inner join t_pos_product_13011 b
+on a.upc_unit collate Korean_Wansung_CI_AS=b.upc_unit
+
+---------------------------------------------
+--insert into T_TRAN_GENERAL select * from [T_TRAN_GENERAL_09082]
+--insert into T_TRAN_DETAILS select * from [T_TRAN_DETAILS_09082]
+----insert into T_VOID select * from [T_VOID]
+--insert into T_RETURN_VOID select * from [T_RETURN_VOID_09082]
+
+
+--insert into Z1_SAVE_DATA select * from [Z1_SAVE_DATA_09082]
+--insert into X1_SAVE_DATA select * from [X1_SAVE_DATA_09082]
+--insert into X1_CHEQUE_SAVE select * from [X1_CHEQUE_SAVE_09082]
+-----insert into X1_CREDIT_CARD_SAVE select * from [20160416_2_X1_CREDIT_CARD_SAVE]---1
+--insert into X1_DEBIT_SAVE select * from [X1_DEBIT_SAVE_09082]
+--insert into X1_CREDIT_SAVE select * from [X1_CREDIT_SAVE_09082]
+--insert into X1_CASH_INPUT_SAVE select * from [X1_CASH_INPUT_SAVE_09082]
+--insert into TOBACCO_SALES select * from [TOBACCO_SALES_09082]
+================================
+SELECT MAX(PATCH_NO) FROM T_POS_PRODUCT_13011
+22700
+SELECT SPECIAL_UNIT_PRICE,SP_BEGIN,BUYER,SP_END,IDATE FROM T_SPECIAL_201709_REGAL
+SELECT SPECIAL_UNIT_PRICE,SP_BEGIN,BUYER,SP_END,IDATE FROM T_SPECIAL_201709_PRE
+
+--UPDATE A SET A.SP_BEGIN=B.SP_BEGIN,A.SP_END=B.SP_END,A.BUYER='9PRE',A.IDATE='2017-09-01',A.PATCH_NO=22700
+FROM T_POS_PRODUCT_13011 A INNER JOIN T_SPECIAL_201709_PRE B
+ON A.UPC_UNIT=B.UPC_UNIT
+
+--UPDATE A SET A.SP_BEGIN='2017-09-01',A.SP_END='2017-09-30',A.BUYER='9PRE',A.IDATE='2017-09-01',A.PATCH_NO=22701
+,A.SPECIAL_UNIT_PRICE=B.SPECIAL_UNIT_PRICE
+FROM T_POS_PRODUCT_13011 A INNER JOIN T_SPECIAL_201709_REGAL B
+ON A.UPC_UNIT=B.UPC_UNIT
+
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=21.99,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='041116004773'
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=14.29,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='041116005053'
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=16.59,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='041116005886'
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=14.29,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='041116006258'
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=19.89,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='041116006265'
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=18.89,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='041116009099'
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=24.99,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='041116018701'
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=24.99,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='041116032813'
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=24.99,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='041116104923'
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=24.99,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='041116105340'
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=18.89,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='041116105814'
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=24.99,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='041116105821'
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=18.89,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='041116106361'
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=14.29,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='041116262234'	
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=13.79,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='059642904751'	
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=14.69,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='662572201744'	
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=8.29,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='779397136202'	
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=24.69,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='779397136547'		
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=10.29,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='779397302508'		
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=10.49,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='779397302621'	
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=12.49,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='779397451015'	
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=14.69,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='779397468754'	
+--UPDATE T_POS_PRODUCT_13011 SET SPECIAL_UNIT_PRICE=14.69,SP_BEGIN='2017-09-01',SP_END='2017-09-30',PATCH_NO=22701
+,IDATE='2017-09-01'	WHERE UPC_UNIT='779397477435'	
+	
+//========================================
+select c.customer_name,c.owner_name,c.address,c.city,c.post_code,c.telephone_number
+,s.*
+from
+(
+select g.client_id,d.upc_unit,d.iname,sum(d.qty) as qty,sum(d.qty*d.uint_price) as amt
+from t_tran_details d inner join t_tran_general g
+on d.merchant_id = g.merchant_id
+where (g.z1_date>= '2017-08-14' and g.z1_date <='2017-08-19')
+and d.iname like '%pringles%'
+group by g.client_id,d.upc_unit,d.iname
+) s left join [kBACMS].dbo.erp_customerinformation c
+on s.client_id=c.customer_number
+order by s.client_id
+
+
+--update t_330324_350361_g$ set client_id='350361'
+--update t_330324_350361_g$ set sale_type='',tshift='',scan_invoice_no_cigarette='',return_invoice_no=''
+--insert into t_tran_general
+select * from t_330324_350361_g$
+--insert into t_tran_DETAILS
+select * from t_330324_350361_d$
+
+select a.* ,b.* from t_tran_general a inner join t_330324_350361_g$ b
+on a.merchant_id=b.merchant_id
+
+select * from T_350361_BK_20170822
+select * into T_330324_BK_20170822 FROM T_TRAN_GENERAL WHERE CLIENT_ID='330324'  --DROP TABLE T_330324_BK_20170822 
+SELECT * FROM  T_330324_BK_20170822 -- DELETE FROM T_TRAN_GENERAL WHERE CLIENT_ID='330324' 
+select * from  t_tran_general where client_id='350361'
+
+
+SELECT D.*,D2.MERCHANT_ID,D2.SEQ FROM T_TRAN_DETAILS D INNER JOIN t_330324_350361_d$ D2 
+ON D.MERCHANT_ID COLLATE Korean_Wansung_CI_AS=D2.MERCHANT_ID
+
+SELECT * FROM T_TRAN_DETAILS WHERE MERCHANT_ID ='K17060932058'
+SELECT * FROM t_330324_350361_d$ WHERE MERCHANT_ID ='K17060932058'
+
+SELECT DISTINCT A.MERCHANT_ID,B.MERCHANT_ID AS BBB  FROM  t_330324_350361_d$ A INNER JOIN T_TRAN_DETAILS B
+ON A.MERCHANT_ID COLLATE SQL_Latin1_General_CP1_CI_AS=B.MERCHANT_ID
+
+--DELETE t_330324_350361_d$ FROM  t_330324_350361_d$ A INNER JOIN T_DELETE_350361 B 
+ON A.MERCHANT_ID COLLATE SQL_Latin1_General_CP1_CI_AS=B.MERCHANT_ID
+=====================스페셜 2017_08고객ㄱ======
+select * from t_201708_caday$
+--delete t_201708_caday$ where upc_unit is null
+select * from t_pos_product_13011 where buyer='6cust'
+
+select max(patch_no)  from t_pos_product_13011
+
+22420
+22548
+--UPDATE A 
+SET A.SPECIAL_UNIT_PRICE=B.SPECIAL_UNIT_PRICE,A.SP_BEGIN=B.SP_BEGIN,A.SP_END=B.SP_END,A.PATCH_NO=22550
+,A.BUYER=B.BUYER,a.idate='2017-08-15'
+FROM T_POS_PRODUCT_13011 A INNER JOIN t_201708_caday$ B
+ON A.UPC_UNIT COLLATE Korean_Wansung_CI_AS=B.UPC_UNIT
+
+select * from t_pos_product_13011 where buyer='8cust'
+================스페셜 2017_07======
+select top 3 patch_no from t_pos_product_13011 order by patch_no desc
+--update T_SPECIAL_2017_07_pre set patch_no=6700
+--select * from T_SPECIAL_2017_07_pre
+--select max(patch_no) from t_pos_product_13011
+--SELECT * FROM t_pos_product_13011 WHERE PATCH_NO>=6590
+--select TOP 3000 * from t_pos_product_13011 ORDER BY PATCH_NO DESC
+20821
+SELECT A.UPC_UNIT,A.DESP,A.SPECIAL_UNIT_PRICE,B.SPECIAL_UNIT_PRICE,A.SP_BEGIN,B.SP_BEGIN,A.SP_END,B.SP_END,A.PATCH_NO,B.PATCH_NO
+
+--UPDATE A 
+SET A.SPECIAL_UNIT_PRICE=B.SPECIAL_UNIT_PRICE,A.SP_BEGIN=B.SP_BEGIN,A.SP_END=B.SP_END,A.PATCH_NO=B.PATCH_NO
+,A.BUYER=B.BUYER
+FROM T_POS_PRODUCT_13011 A INNER JOIN T_SPECIAL_2017_07_pre B
+ON A.UPC_UNIT COLLATE Korean_Wansung_CI_AS=B.UPC_UNIT
+--WHERE B.SP_END>='2017-02-15'
+=공급업체별 횟수 금액
+select Q.*,Q1.cnt
+,(Select s.supplier from t_supplier s where s.supp_code=Q.supp_code) as s_name 
+From
+(
+select g.supp_code,count(*) as cnt,sum(d.tot_qty * d.net_price) as total
+from  
+t_pur_ord_general g left join t_pur_ord_detail d
+on g.ord_id = d.ord_id
+where g.idate>='2017-05-01' and g.idate<='2017-05-31'
+group by g.supp_code
+) Q left join
+(
+select g.supp_code,count(*) as cnt
+from  
+t_pur_ord_general g 
+where g.idate>='2017-05-01' and g.idate<='2017-05-31'
+group by g.supp_code
+) Q1 ON Q.supp_code = Q1.supp_code
+order by Q.total desc
+
+select g.* from t_pur_ord_general g where g.supp_code='4048'
+and g.idate>='2017-05-01' and g.idate<='2017-06-31'
+====================
+고객감사 올리기
+select * from t_201706_caday$ where len(upc_unit)=6
+--delete from t_201706_caday$ where len(upc_unit)=6
+select a.unit_price,b.* from t_pos_product_13011 order by patch_no desc
+select max(patch_no) from t_pos_product_13011
+--update t_201706_caday$ set patch_no=22073
+--update A set A.special_unit_price=b.special_unit_price,A.sp_begin=B.sp_begin,A.sp_end=B.sp_end,A.idate=B.idate
+,a.patch_no=b.patch_no,a.buyer=b.buyer
+from t_pos_product_13011 a inner join t_201706_caday$ b 
+on a.upc_unit collate Korean_Wansung_CI_AS=b.upc_unit
+====mss 쿼리===========================
+select a.*  INTO T_MPS_2017_0228_NEW2  from t_mps_2017_0228$ A WHERE A.UPC <>''  ORDER BY UPC 
+select a.*,b.prod_code from t_mps_2017_0228$ a INNER join t_product b on a.upc = b.upc_ut
+
+--DROP TABLE T_MPS_2017_0228_NEW2
+SELECT * FROM T_MPS_2017_0228_NEW2
+WHERE PROD_CODE IS NOT NULL
+ORDER BY PROD_CODE  
+--select * from t_supplier where supplier like '%mps%'
+select a.*,b.prod_code into T_MPS_2017_0228_NEW2_prod from T_MPS_2017_0228_NEW2 a INNER join t_product b on a.upc = b.upc_ut
+select * from T_MPS_2017_0228_NEW2_prod
+select A.*,B.DESP,B.INAME,B.SUPP_CODE from T_MPS_2017_0228_NEW2_prod A INNER JOIN T_PRODUCT B ON A.PROD_CODE=B.PROD_CODE
+--select top 10 * from t_price
+
+UPDATE A set a.reg_price=[b.cash & cary],a.inv_price=[b.cash & cary],a.net_price=[b.cash & cary]
+from T_PRICE A INNER JOIN T_MPS_2017_0228_NEW2_prod B
+ON A.PROD_CODE=B.ROD_CODE
+
+supp_code	supplier	supp_short_name	buyer	pay_code
+2019	MPS	MPS(Candy)	B	007
+201A	MPS H&B	MPS	B	007
+201B	MPS (Stationary)	MPS	B	007
+201C	MPS(NON-TAX)	MPS	B	007
+201D	MPS(CnD/JnJ)	MPS(CnD/JnJ)	B	007
+
+=====스페셜 쿼리로 올리기==============
+select top 3 patch_no from t_pos_product_13011 order by patch_no desc
+--update t_pos_product_13011_bf_cust$ set patch_no=20825
+20821
+SELECT A.UPC_UNIT,A.DESP,A.SPECIAL_UNIT_PRICE,B.SPECIAL_UNIT_PRICE,A.SP_BEGIN,B.SP_BEGIN,A.SP_END,B.SP_END,A.PATCH_NO,B.PATCH_NO
+
+--UPDATE A SET A.SPECIAL_UNIT_PRICE=B.SPECIAL_UNIT_PRICE,A.SP_BEGIN=B.SP_BEGIN,A.SP_END=B.SP_END,A.PATCH_NO=B.PATCH_NO
+FROM T_POS_PRODUCT_13011 A INNER JOIN T_POS_PRODUCT_13011_BF_CUST$ B
+ON A.UPC_UNIT COLLATE Korean_Wansung_CI_AS=B.UPC_UNIT
+WHERE B.SP_END>='2017-02-15'
+-----------------------------------------------------
+select max(patch_no) from t_pos_product_13011 
+
+20971
+
+select * from t_special_2017_03$
+--update t_special_2017_03$ set patch_no=20975
+
+--UPDATE A SET A.SPECIAL_UNIT_PRICE=B.SPECIAL_UNIT_PRICE,A.SP_BEGIN=B.SP_BEGIN,A.SP_END=B.SP_END,A.PATCH_NO=B.PATCH_NO
+FROM T_POS_PRODUCT_13011 A INNER JOIN t_special_2017_03$ B
+ON A.UPC_UNIT COLLATE Korean_Wansung_CI_AS=B.UPC_UNIT
+--WHERE B.SP_END>='2017-02-15'
+
+
+select * from T_POS_PRODUCT_13011 where patch_no=20975
+============================================
+
+
+select top 1 * from TOBACCO_SALES
+
+select * from TOBACCO_SALES where cdate >='2016-12-30' and cdate<='2017-01-06'
+select * from TOBACCO_SALES where cdate >='2017-01-06' and cdate<='2017-01-13'
+select * from TOBACCO_SALES where cdate >='2017-01-13' and cdate<='2017-01-20'
+select * from TOBACCO_SALES where cdate >='2017-01-20' and cdate<='2017-01-26'
+
+select * from TOBACCO_SALES where cdate >='2017-01-27' and cdate<='2017-01-29'
+
+select * from TOBACCO_SALES where cdate >='2017-01-30' and cdate<='2017-01-29'
+
+=========최근 마감 지운것=======
+
+--insert into Z1_SAVE_DATA select * from [20164274Z1_SAVE_DATA]
+select top 30 * from [Z1_SAVE_DATA] where station='2' and z1_no ='Z132001783' order by z1_date desc
+--delete [Z1_SAVE_DATA] where station='2' and z1_no ='Z132001783'
+--insert into X1_SAVE_DATA select * from [20164274X1_SAVE_DATA]
+select top 30 * from [X1_SAVE_DATA] where station='2' and x1_no='X132002016'  order by x1_date desc
+--delete [X1_SAVE_DATA] where station='2' and x1_no='X132002016' 
+
+--insert into X1_CHEQUE_SAVE select * from [20160416_2_X1_CHEQUE_SAVE]
+select top 30 * from [X1_CHEQUE_SAVE] where station='2' and x1_no='X132002016'  order by cdate desc
+--delete [X1_CHEQUE_SAVE] where station='2' and x1_no='X132002016' 
+
+--insert into X1_CREDIT_CARD_SAVE select * from [20160416_2_X1_CREDIT_CARD_SAVE]---1
+--select top 30 * from [X1_CREDIT_CARD_SAVE] where station='2' order by cdate desc
+--insert into X1_DEBIT_SAVE select * from [20164274X1_DEBIT_SAVE]
+select top 30 * from [X1_DEBIT_SAVE] where station='2' and x1_no='X132002016' order by cdate desc
+--delete [X1_DEBIT_SAVE]  where station='2' and x1_no='X132002016' 
+
+
+--insert into X1_CREDIT_SAVE select * from [20164274X1_CREDIT_SAVE]
+select top 30 * from [X1_CREDIT_SAVE] where station='2' and x1_no='X132002016' order by cdate desc
+--delete [X1_CREDIT_SAVE]  where station='2' and x1_no='X132002016' 
+
+--insert into X1_CASH_INPUT_SAVE select * from [20164274X1_CASH_INPUT_SAVE]
+select top 30 * from [X1_CASH_INPUT_SAVE] where station='2' and x1_no='X132002016' order by cdate desc
+--delete [X1_CASH_INPUT_SAVE]  where station='2' and x1_no='X132002016' 
+
+--insert into TOBACCO_SALES select * from [20164274TOBACCO_SALES]
+select top 30 * from [TOBACCO_SALES] where station='2' and x1_no='X132002016' order by cdate desc
+--delete [TOBACCO_SALES]  where station='2' and x1_no='X132002016' 
+
+--insert into X1_COUPON_SAVE select * from [20164274X1_COUPON_SAVE]
+--select top 30 * from [X1_COUPON_SAVE] where station='2' order by cdate desc
+
+
+====ms access pivot==========
+TRANSFORM Sum(T_TRAN_DETAILS.[qty]) AS qtyOfSum
+SELECT T_TRAN_DETAILS.desp
+FROM T_TRAN_DETAILS
+WHERE (((Format([idate],'yyyy-mm'))>=#7/1/2015# And (Format([idate],'yyyy-mm'))<=#9/30/2016#) AND ((T_TRAN_DETAILS.prod1)='LT'))
+GROUP BY T_TRAN_DETAILS.desp
+PIVOT Format([idate],'yyyy-mm');
+================JTI 담배자료 원자료 찾아서 수정 SQL=========
+--select * from JTIAccounts  -- select top 2 * from t_tran_details
+select 
+'407' as JTI_WholesalerCode,	
+'Sincere Trading' as JTI_WholesalerName,	
+g.client_id as CustNo,	
+c.customer_name as customer_name,	
+c.telephone_number as telephone_number,
+d.idate as [Date],	
+c.address as [address],	
+c.city as city,	
+c.province as province,	
+c.post_code as post_code,	
+d.UPC_UNIT as UPC,	
+d.INAME as PRODUCT_DESC,	
+d.qty as SaleQTY,	
+d.uint_price as UnitSellingPrice,	
+'0'  as ServiceFee,	
+d.uint_price as NetSellingPrice,	
+j.JTI_AccountCode as JTI_AccountCode,	
+j.JTI_AccountName as JTI_AccountName 
+from (t_tran_details D LEFT JOIN t_tran_general G ON D.merchant_id = G.merchant_id)
+left join KBACMS.dbo.ERP_CUSTOMERINFORMATION c ON g.client_id = c.customer_number
+left join JTIAccounts j ON g.client_id = j.Whls_RetailerCode
+where D.prod1='TB' 
+and (G.z1_date>='2018-01-21' and G.z1_date <= '2018-01-27')
+order by d.idate 
+=============JTI 담배자료 K.B.A.-->407로========
+select
+'407' as Wholesale
+,case  
+  when D.store='3' then 'WestMall'
+  when D.store='2' then 'Mobile'
+end as Location
+,G.Client_id as CustNo
+/*,(select c.customer_name from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustNAME
+,(select c.telephone_number from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustPHONE
+
+,G.z1_date as Date
+
+,(select c.address from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustADDR
+,(select c.city from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustCITY
+,(select c.province from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustPROVINCE
+
+,(select c.post_code from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustZIPCode
+*/
+,c.customer_name,c.telephone_number,G.z1_date as Date
+,c.address,c.city,c.province,c.post_code
+,D.UPC_UNIT as UPC,D.INAME AS PRODUCT_DESC,D.QTY AS SaleQTY,(D.QTY * D.UINT_PRICE) AS SaleAmount 
+
+ from 
+(t_tran_details D LEFT JOIN t_tran_general G ON D.merchant_id = G.merchant_id)
+left join KBACMS.dbo.ERP_CUSTOMERINFORMATION c ON g.client_id = c.customer_number
+where D.prod1='TB' 
+--and (D.iname LIKE  '%JTI%' OR D.iname like  '%RBH%')
+and (G.z1_date>='2017-06-25' and G.z1_date <= '2017-07-01') --and D.store='2'
+order by D.STORE DESC, G.z1_date
+============jti 담배자료 2017======
+select
+'K.B.A' as Wholesale
+,case  
+  when D.store='3' then 'WestMall'
+  when D.store='2' then 'Mobile'
+end as Location
+,G.Client_id as CustNo
+/*,(select c.customer_name from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustNAME
+,(select c.telephone_number from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustPHONE
+
+,G.z1_date as Date
+
+,(select c.address from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustADDR
+,(select c.city from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustCITY
+,(select c.province from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustPROVINCE
+
+,(select c.post_code from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustZIPCode
+*/
+,c.customer_name,c.telephone_number,G.z1_date as Date
+,c.address,c.city,c.province,c.post_code
+,D.UPC_UNIT as UPC,D.INAME AS PRODUCT_DESC,D.QTY AS SaleQTY,(D.QTY * D.UINT_PRICE) AS SaleAmount 
+
+ from 
+(t_tran_details D LEFT JOIN t_tran_general G ON D.merchant_id = G.merchant_id)
+left join KBACMS.dbo.ERP_CUSTOMERINFORMATION c ON g.client_id = c.customer_number
+where D.prod1='TB' 
+--and (D.iname LIKE  '%JTI%' OR D.iname like  '%RBH%')
+and (G.z1_date>='2017-06-25' and G.z1_date <= '2017-07-01') --and D.store='2'
+order by D.STORE DESC, G.z1_date
+
+==========mr.cristies 리콜=======
+select Q.client_id,substring(Q.merchant_id,2,6) as Date,substring(Q.merchant_id,8,1) as Branch
+,C.customer_name,C.owner_name,c.address,c.city,c.province,c.post_code,c.telephone_number
+,Q.z1_date,Q.upc_unit,Q.iname,Q.s_sum from
+(
+select g.merchant_id,g.z1_date,g.client_id,a.upc_unit,a.iname,sum(a.qty) as s_sum from t_tran_details a left join t_tran_general g
+on a.merchant_id=g.merchant_id 
+where a.upc_unit='066721010469' and (g.z1_date>='2016-01-01')
+group by g.merchant_id,g.z1_date,g.client_id,a.upc_unit,a.iname
+)Q 
+left join  [kbacms].dbo.ERP_CUSTOMERINFORMATION c ON Q.client_id=C.customer_number
+order by Q.z1_date,Q.client_id desc
+
+==========모바일품목==============
+select upc_unit,sum(qty) as s_qty into Sale_Mobile_2016 from t_tran_details
+where store=2
+and (substring(merchant_id,0,6)>='M1601' and substring(merchant_id,0,6)<='M1612')
+group by upc_unit 
+order by sum(qty) desc
+
+--drop table Sale_Mobile_2016
+
+select substring('M16122823037',0,6)
+
+select top 1 * from t_tran_details
+select top 10 * from Sale_Mobile_2016
+
+select 
+p.prod1,p.iname,p.desp,p.upc_unit,p.unit_price,p.special_unit_price,p.tax,p.supplier,p.idate  
+,s.s_qty
+from t_pos_product_13011 p left join Sale_Mobile_2016 s ON p.upc_unit=s.upc_unit
+order by p.prod1,p.desp,p.supplier,s.s_qty
+ 
+
+============직원추가----------------------
+select * from ERP_CUSTOMERINFORMATION  where customer_number='20090513'
+where 
+--owner_name like '%Chun%'
+--address like '%150 Berry%'
+customer_number in 
+('6015','30682','31561','330461'
+)
+order by customer_name 
+
+insert into ERP_CUSTOMERINFORMATION (customer_number,customer_name,vendor_permit_number,owner_name,datecreated,dateapproved)
+values
+('20160901','Maeng,Joo Kwang','20160901','Maeng,Joo Kwang',getdate(),getdate())
+
+insert into ERP_CUSTOMERINFORMATION (customer_number,customer_name,vendor_permit_number,owner_name,datecreated,dateapproved)
+values
+('20161101','Okba','20161101','Okba',getdate(),getdate())
+-----------------
+T_EMP_INFO
+-------------------개별 주주 방문횟수,금액---------------
+select count(g.merchant_id),sum(amount)
+from t_tran_general g 
+where (g.z1_date>='2016-09-01' and g.z1_date<='2017-11-30')
+and g.client_id='230700'
+--------------------주주방문회수-----------------------------
+select a.kba_no,count(g.merchant_id)
+from t_tran_general g left join t_aaa$ a
+on g.client_id=a.kba_no
+where (g.z1_date>='2015-09-01' and g.z1_date<='2016-11-30')
+group by a.kba_no
+order by count(g.merchant_id)
+------------2017주주 방문 _2016 기준
+select isnull(Q.qty,0)as visit_17,X.* from
+t_kba_member_2016$ X left join 
+(
+select a.kba_no,count(g.merchant_id) as qty
+from t_tran_general g left join t_kba_member_2016$ a
+on g.client_id=a.kba_no
+where (g.z1_date>='2016-09-01' and g.z1_date<= '2017-08-08')
+and kba_no is not null
+group by a.kba_no
+) as Q
+on X.kba_no=Q.kba_no
+order by X.number
+************************************************************
+주주 방문 이것이 진짜 가아님
+************************************************************
+--DROP TABLE T_2017_VISIT_08
+SELECT a.no,a.name,A.KBA_NO2,COUNT(B.CLIENT_ID) AS CNT,SUM(AMOUNT) AS AMT into T_2017_VISIT_08  FROM T_2016_SHARE_20171023_02$ A
+LEFT JOIN T_TRAN_GENERAL B ON A.KBA_NO2=B.CLIENT_ID
+WHERE (B.Z1_DATE>='2016-09-01' AND B.Z1_DATE<='2017-08-30')
+GROUP BY A.KBA_NO2,a.no,a.name
+order by a.no
+----------------------------------------------------
+SELECT a.no,A.KBA_NO,COUNT(B.CLIENT_ID) AS CNT,SUM(AMOUNT) AS AMT into T_2017_VISIT_NEW   FROM T_2017_KBASHARE_1025_NEW$ A
+LEFT JOIN T_TRAN_GENERAL B ON A.KBA_NO=B.CLIENT_ID
+WHERE (B.Z1_DATE>='2016-10-25' AND B.Z1_DATE<='2017-08-30')
+GROUP BY a.no,A.KBA_NO
+order by a.no
+
+-------------------------------
+SELECT * FROM T_2017_VISIT_NEW
+SELECT * FROM T_2017_KBASHARE_1025_NEW$ ORDER BY NO
+--update t_2017_kbashare_1025_new$ set kba_no='33000156' where no=286
+--update t_2017_kbashare_1025_new$ set kba_no='33000070' where no=307
+===============================
+SELECT A.*,ISNULL(B.CNT,0) AS VISIT,ISNULL(B.AMT,0) AS AMT FROM  T_2017_KBASHARE_1025_NEW$ A
+LEFT JOIN T_2017_VISIT_NEW B ON A.KBA_NO=B.KBA_NO
+ORDER BY A.NO
+======================================
+286,307
+SELECT Q.*,X.CUSTOMER_NAME,X.OWNER_NAME,X.ADDRESS,X.CITY,X.PROVINCE,X.POST_CODE,X.TELEPHONE_NUMBER
+,Z.ZONE,Z.NAME
+ FROM (
+SELECT A.*,ISNULL(B.CNT,0) AS VISIT,ISNULL(B.AMT,0) AS AMT FROM  T_2017_KBASHARE_1025_NEW$ A
+LEFT JOIN T_2017_VISIT_NEW B ON A.KBA_NO=B.KBA_NO
+) AS Q LEFT JOIN [KBACMS].DBO.ERP_CUSTOMERINFORMATION X
+ON Q.KBA_NO = X.CUSTOMER_NUMBER
+ LEFT JOIN T_2016_SHARE_20171023_02$ Z
+ON Q.KBA_NO = Z.KBA_NO2
+ORDER BY Q.NO
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+SELECT A.*,B.* FROM T_2016_SHARE_20171023_02$ A LEFT JOIN T_2017_VISIT_08 B
+ON A.KBA_NO2=B.KBA_NO2
+ORDER BY A.NO
+************************************************
+'--DROP TABLE T_2017_VISIT_NEW
+SELECT a.no,A.KBA_NO,COUNT(B.CLIENT_ID) AS CNT,SUM(AMOUNT) AS AMT into T_2017_VISIT_NEW_09_08   FROM T_2017_KBASHARE_1025_NEW$ A
+LEFT JOIN T_TRAN_GENERAL B ON A.KBA_NO=B.CLIENT_ID
+WHERE (B.Z1_DATE>='2016-09-01' AND B.Z1_DATE<='2017-08-31')
+GROUP BY a.no,A.KBA_NO
+order by a.no
+
+-------------------------------
+SELECT * FROM T_2017_VISIT_NEW
+SELECT * FROM T_2017_KBASHARE_1025_NEW$ ORDER BY NO
+select * from T_2016_SHARE_20171023_02$
+--update t_2017_kbashare_1025_new$ set kba_no='33000156' where no=286
+--update t_2017_kbashare_1025_new$ set kba_no='33000070' where no=307
+===============================
+SELECT A.*,ISNULL(B.CNT,0) AS VISIT,ISNULL(B.AMT,0) AS AMT FROM  T_2017_KBASHARE_1025_NEW$ A
+LEFT JOIN T_2017_VISIT_NEW B ON A.KBA_NO=B.KBA_NO
+ORDER BY A.NO
+======================================
+286,307
+
+SELECT Q.*,X.CUSTOMER_NAME,X.OWNER_NAME,X.ADDRESS,X.CITY,X.PROVINCE,X.POST_CODE,X.TELEPHONE_NUMBER
+,Z.ZONE,Z.NAME
+ FROM (
+SELECT A.*,ISNULL(B.CNT,0) AS VISIT,ISNULL(B.AMT,0) AS AMT FROM  T_2017_KBASHARE_1025_NEW$ A
+LEFT JOIN T_2017_VISIT_NEW B ON A.KBA_NO=B.KBA_NO
+) AS Q LEFT JOIN [KBACMS].DBO.ERP_CUSTOMERINFORMATION X
+ON Q.KBA_NO = X.CUSTOMER_NUMBER
+ LEFT JOIN T_2016_SHARE_20171023_02$ Z
+ON Q.KBA_NO = Z.KBA_NO2
+ORDER BY Q.NO
+
+********************
+SELECT Q.*,X.CUSTOMER_NAME,X.OWNER_NAME,X.ADDRESS,X.CITY,X.PROVINCE,X.POST_CODE,X.TELEPHONE_NUMBER
+,Z.ZONE,Z.NAME
+ FROM (
+SELECT A.*,ISNULL(B.CNT,0) AS VISIT,ISNULL(B.AMT,0) AS AMT FROM  T_2017_KBASHARE_1025_NEW$ A
+LEFT JOIN T_2017_VISIT_NEW_09_08 B ON A.KBA_NO=B.KBA_NO
+) AS Q LEFT JOIN [KBACMS].DBO.ERP_CUSTOMERINFORMATION X
+ON Q.KBA_NO = X.CUSTOMER_NUMBER
+ LEFT JOIN T_2016_SHARE_20171023_02$ Z
+ON Q.KBA_NO = Z.KBA_NO2
+ORDER BY Q.NO
+
+
+SELECT * FROM T_TRAN_GENERAL
+WHERE CLIENT_ID='2251' AND
+(Z1_DATE>='2016-10-25' AND Z1_DATE<='2017-10-24' )
+ORDER BY IDATE DESC
+
+SELECT * FROM T_TRAN_GENERAL
+WHERE CLIENT_ID='2251' AND
+(Z1_DATE>='2016-09-01' AND Z1_DATE<='2017-08-31' )
+ORDER BY IDATE DESC
+
+++++++++++++++++++++++++++++++++++++++++++
+일일 주주 구입 기준-- 2017-10-26 일 만듬
+++++++++++++++++++++++++++++++++++++++++++
+---T_2017_VISIT_NOT_DAY_10 만들기
+SELECT a.no,A.KBA_NO,COUNT(B.Z1_DATE) AS CNT
+,COUNT(distinct SUBSTRING(CONVERT(NVARCHAR(30),B.Z1_DATE,111),1,10)) AS CNT2
+,SUM(AMOUNT) AS AMT
+INTO T_2017_VISIT_NOT_DAY_10
+ FROM T_2017_KBASHARE_1025_NEW$ A
+LEFT JOIN T_TRAN_GENERAL B ON A.KBA_NO=B.CLIENT_ID
+WHERE (SUBSTRING(CONVERT(NVARCHAR(30),B.Z1_DATE,111),1,10)>='2016/10/25' 
+AND SUBSTRING(CONVERT(NVARCHAR(30),B.Z1_DATE,111),1,10)<='2017/10/24') 
+--and B.CLIENT_ID = '230245'
+GROUP BY a.no,A.KBA_NO
+order by a.no
+
+
+--주주 리스트 와 연결 하기
+SELECT a.no,A.KBA_NO,COUNT(B.Z1_DATE) AS CNT
+,COUNT(distinct SUBSTRING(CONVERT(NVARCHAR(30),B.Z1_DATE,111),1,10)) AS CNT2
+,SUM(AMOUNT) AS AMT
+INTO T_2017_VISIT_NOT_DAY_08
+ FROM T_2017_KBASHARE_1025_NEW$ A
+LEFT JOIN T_TRAN_GENERAL B ON A.KBA_NO=B.CLIENT_ID
+WHERE (SUBSTRING(CONVERT(NVARCHAR(30),B.Z1_DATE,111),1,10)>='2016/09/01' 
+AND SUBSTRING(CONVERT(NVARCHAR(30),B.Z1_DATE,111),1,10)<='2017/08/31') 
+--and B.CLIENT_ID = '230245'
+GROUP BY a.no,A.KBA_NO
+order by a.no
+
+==================================
+
+SELECT Q.*,X.CUSTOMER_NAME,X.OWNER_NAME,X.ADDRESS,X.CITY,X.PROVINCE,X.POST_CODE,X.TELEPHONE_NUMBER
+,Z.ZONE,Z.NAME
+ FROM (
+SELECT A.*,ISNULL(B.CNT,0) AS VISIT1,ISNULL(B.CNT2,0) AS VISIT2,ISNULL(B.AMT,0) AS AMT FROM  T_2017_KBASHARE_1025_NEW$ A
+LEFT JOIN T_2017_VISIT_NOT_DAY_10 B ON A.KBA_NO=B.KBA_NO
+) AS Q LEFT JOIN [KBACMS].DBO.ERP_CUSTOMERINFORMATION X
+ON Q.KBA_NO = X.CUSTOMER_NUMBER
+ LEFT JOIN T_2016_SHARE_20171023_02$ Z
+ON Q.KBA_NO = Z.KBA_NO2
+--WHERE Q.VISIT IN (3,4,5)
+ORDER BY Q.KBA_NO
+
+----------------------------------
+
+SELECT Q.*,X.CUSTOMER_NAME,X.OWNER_NAME,X.ADDRESS,X.CITY,X.PROVINCE,X.POST_CODE,X.TELEPHONE_NUMBER
+,Z.ZONE,Z.NAME
+ FROM (
+SELECT A.*,ISNULL(B.CNT,0) AS VISIT1,ISNULL(B.CNT2,0) AS VISIT2,ISNULL(B.AMT,0) AS AMT FROM  T_2017_KBASHARE_1025_NEW$ A
+LEFT JOIN T_2017_VISIT_NOT_DAY_08 B ON A.KBA_NO=B.KBA_NO
+) AS Q LEFT JOIN [KBACMS].DBO.ERP_CUSTOMERINFORMATION X
+ON Q.KBA_NO = X.CUSTOMER_NUMBER
+ LEFT JOIN T_2016_SHARE_20171023_02$ Z
+ON Q.KBA_NO = Z.KBA_NO2
+--WHERE Q.VISIT IN (3,4,5)
+ORDER BY Q.KBA_NO
+
+======***************************=================
+최종 우선---이것이 진짜
+========================================
+1)no 추가하고, kba_no 를 int , varchar(50) 으로 바궈야 안깨짐
+2)아래 것 
+SELECT A.*,ISNULL(B.CNT,0) AS VISIT1,ISNULL(B.CNT2,0) AS VISIT2,ISNULL(AMT,0) AS AMT
+,C.CUSTOMER_NAME,C.OWNER_NAME,C.ADDRESS,C.CITY,C.PROVINCE,C.POST_CODE,C.TELEPHONE_NUMBER
+ FROM
+T_2017_VISIT_1102_99$ A LEFT JOIN 
+(
+select 
+a.no,A.KBA_NO,COUNT(B.Z1_DATE) AS CNT
+,COUNT(distinct SUBSTRING(CONVERT(NVARCHAR(30),B.Z1_DATE,111),1,10)) AS CNT2
+,SUM(AMOUNT) AS AMT
+ from T_2017_VISIT_1102_99$ A
+LEFT JOIN T_TRAN_GENERAL B ON A.KBA_NO=B.CLIENT_ID
+WHERE (SUBSTRING(CONVERT(NVARCHAR(30),B.Z1_DATE,111),1,10)>='2016/11/3' 
+AND SUBSTRING(CONVERT(NVARCHAR(30),B.Z1_DATE,111),1,10)<='2017/11/2') 
+GROUP BY a.no,A.KBA_NO
+--order by no
+) B
+ON A.KBA_NO=B.KBA_NO
+LEFT JOIN KBACMS.DBO.ERP_CUSTOMERINFORMATION C
+ON CONVERT(NVARCHAR(30),A.KBA_NO)=C.CUSTOMER_NUMBER
+ORDER BY A.NO 
+
+================2016매츌순위==========
+select Q.*
+,c.customer_name,c.owner_name,c.address,c.city,c.post_code
+from
+(
+select top 100 g.client_id,sum(g.net_sales) as s
+from t_tran_general g 
+where (g.z1_date>='2015-10-01' and g.z1_date<='2016-11-30')
+group by g.client_id
+) Q left join  [KBACMS].dbo.ERP_CUSTOMERINFORMATION c
+on Q.client_id = c.customer_number
+order by Q.s desc
+------------------------
+select Q.*
+,c.customer_name,c.owner_name,c.telephone_number,c.address,c.city,c.province,c.post_code
+from
+(
+select  g.client_id,sum(g.net_sales) as s
+from t_tran_general g 
+where (g.z1_date>='2016-01-01' and g.z1_date<='2016-12-06')
+group by g.client_id
+) Q left join  [KBACMS].dbo.ERP_CUSTOMERINFORMATION c
+on Q.client_id = c.customer_number
+where Q.s >=3000
+order by Q.s 
+=====================================
+부이사장
+select d.* from t_tran_details d left join t_tran_general g
+on g.merchant_id=d.merchant_id
+where (g.z1_date>='2015-10-01' and g.z1_date<='2016-11-30')
+and g.client_id='350517' 
+and g.merchant_id < 'K16060133027'
+order by g.merchant_id desc
+
+--K16053033033
+
+select merchant_id from t_tran_general
+where client_id='350517' and merchant_id<='K16053033033'
+and (z1_date>='2015-10-01' and z1_date<='2016-11-30')
+order by merchant_id desc
+
+
+select client_id,count(*) from t_tran_general
+where client_id in ('230322') 
+and (z1_date>='2015-09-01' and z1_date<='2016-11-01')
+group by client_id
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+========지점서버에 전송시--재영수증 발행====================================
+SELECT * FROM T_TRAN_GENERAL WHERE Z1_DATE>='2016-04-01' AND Z1_DATE<='2016-04-30'
+AND CLIENT_ID='204208'
+
+SELECT * FROM T_TRAN_DETAILS WHERE MERCHANT_ID='M16042721013'
+
+SELECT TOP 1 * FROM [74.15.172.209].KBA_POS.DBO.T_TRAN_DETAILS WHERE MERCHANT_ID='M16042721013'
+
+
+--INSERT INTO [74.15.172.209].KBA_POS.DBO.T_TRAN_DETAILS
+SELECT * FROM T_TRAN_DETAILS WHERE MERCHANT_ID='M16042721013'
+
+/////////////////////////////////
+SELECT SUM(QTY*UNIT_PRICE) AS [13%] FROM T_TRAN_DETAILS 
+WHERE (IDATE>=#2016-08-01 00:00:08 AM# AND IDATE<=#2016-08-31 11:59:59 PM#)
+AND TAX1='H' AND PROD1 <>'PA'
+UNION ALL
+SELECT SUM(QTY*UNIT_PRICE) AS [5%] FROM T_TRAN_DETAILS 
+WHERE (IDATE>=#2016-05-01# AND IDATE<=#2016-05-31#)
+AND TAX1='H' AND PROD1 ='PA'
+
+UNION ALL SELECT SUM(QTY*UNIT_PRICE) AS [0%] FROM T_TRAN_DETAILS 
+WHERE (IDATE>=#2016-05-01# AND IDATE<=#2016-05-31#)
+AND TAX1='N';
+
+
+select c.customer_name,c.owner_name,c.telephone_number,c.address,c.city,c.province
+,q.qty,q.idate,q.merchant_id from 
+(
+select g.client_id, d.* from t_tran_details d left join t_tran_general g 
+on d.merchant_id=g.merchant_id
+where d.upc_unit='066721010469'
+) Q left join [KBACMS].dbo.ERP_CUSTOMERINFORMATION c
+on Q.client_id = c.customer_number
+
+
+		end
+		set @var_station = @var_station + 1
+
+	end
+
+select * from t_void
+--where  merchant_id='K16080231002'
+			where store = 3 and station = @var_station and merchant_id > @max_id_westmall
+
+--delete t_void where merchant_id='K16080231002'
+
+select merchant_id,count(*) from t_void 
+where station='1'
+group by merchant_id
+order by merchant_id desc
+
+select top 200  * from t_void 
+where station='1'
+order by merchant_id desc
+
+
+select max(merchant_id) from t_tran_general
+		where store = 3 and station = '1'
+select max(merchant_id) from t_tran_general
+		where store = 3 and station = '2'
+select max(merchant_id) from t_tran_general
+		where store = 3 and station = '3'
+select max(merchant_id) from t_tran_general
+		where store = 3 and station = '4'
+
+select * from t_void
+where  merchant_id='K16080231002'
+			where store = 3 and station = @var_station and merchant_id > @max_id_westmall
+========날짜 빼기============================
+select DATEADD(day,-1,idate),* from t_tran_general order by idate desc
+select DATEADD(day,-1,idate),* from t_tran_general where merchant_id='11690029B'
+SELECT DATEADD(day,-1,getdate())
+=====지점마감 에러시 추적======================
+select top 5 * from BRANCH_DAILY_REPORT order by date desc
+select top 5 * from BRANCH_DAILY_COIN_FOR_BILL order by c_date desc
+select top 5 * from BRANCH_DAILY_O_D_CHQ order by c_date desc
+--delete BRANCH_DAILY_COIN_FOR_BILL where id=2146
+--update BRANCH_DAILY_COIN_FOR_BILL set reprot_id=2145 where id=2144
+select top 5 * from BRANCH_DAILY_O_D_EXCHANGE order by c_date desc
+--delete BRANCH_DAILY_O_D_EXCHANGE where id=2129
+
+select top 5 * from BRANCH_DAILY_O_D_BILL order by c_date desc
+----delete BRANCH_DAILY_O_D_BILL where id=2146
+
+
+select top 5 * from BRANCH_DAILY_REPORT order by date desc
+select top 5 * from BRANCH_DAILY_COIN_FOR_BILL order by c_date desc
+select top 5 * from BRANCH_DAILY_O_D_CHQ order by c_date desc
+select top 5 * from BRANCH_DAILY_O_D_EXCHANGE order by c_date desc
+select top 5 * from BRANCH_DAILY_O_D_BILL order by c_date desc
+
+==========모바일 판매 자료 기준=====================================
+--exec d
+
+--insert into t_tran_general
+select a.* from t_tran_general_2016_08_25 a left join t_tran_general b
+on a.merchant_id= b.merchant_id
+where b.merchant_id is null
+order by a.z1_date  
+
+--insert into t_tran_details
+select d.* from t_tran_details_2016_08_25 d inner join 
+(
+select a.merchant_id from t_tran_general_2016_08_25 a left join t_tran_general b
+on a.merchant_id= b.merchant_id
+where b.merchant_id is null
+) g
+on d.merchant_id = g.merchant_id
+order by merchant_id
+
+order by a.z1_date
+M16082521014
+M16090621020
+
+M16082521014
+M16090621020
+
+--insert into t_tran_details
+select a.* from t_tran_details_2016_08_25 a
+where a.merchant_id>='M16082521014' and a.merchant_id<='M16090621020'
+
+--=======================================
+--insert into t_tran_details
+select a.* from t_tran_details_2016_08_25 a left join  t_tran_general_2016_08_25 b
+on a.merchant_id = b.merchant_id 
+where b.z1_date>='2016-08-26'
+M16082521014
+M16090621020
+--=========================================
+
+
+select a.* from t_tran_details_2016_08_25 a left join t_tran_details b
+on a.merchant_id= b.merchant_id
+where b.merchant_id is not null
+and b.store='2' and b.idate>='2016-08-24'
+order by a.merchant_id
+
+
+select a.mechant_id from t_tran_details_2016_08_25 a inner joi
+
+t_tran_general_2016_08_25
+
+===============================================================
+select * from t_tran_general
+where client_id='302076'
+and (merchant_id>='K12010531012' and merchant_id<='K12123111012')
+order by merchant_id 
+'2012-01-01'
+
+select d.* from t_tran_details d inner join  t_tran_general g on d.merchant_id=g.merchant_id
+where g.client_id='302076'
+and (g.merchant_id>='K12010531012' and g.merchant_id<='K12123111012')
+===고객 영수증 변경 프린트=================
+select * from t_350361$
+
+select t.*,g.* from t_350361$ t left  join   t_tran_general g 
+on t.m_id=g.merchant_id
+
+--update t_tran_general set client_id = '350361'
+from t_tran_general g inner join t_350361$ t
+on g.merchant_id= t.m_id
+====한인 / 비한인 비교==========================
+
+select a.store,b.kor_for,sum(a.sales) From
+(
+select g.store,g.client_id,sum(g.net_sales) as sales from t_tran_general g
+where (g.z1_date>='2015-01-01' and g.z1_date <='2015-12-31')
+group by g.store,g.client_id
+) as A left join KBACMS.dbo.ERP_CUSTOMERINFORMATION B
+ON A.client_id = B.customer_number
+group by a.store,b.kor_for
+order by store,kor_for desc
+=============two table update====================
+Update T Set T.coop=A.coop
+From  t_deal T
+,(
+select p.prod_code,p.supp_code,p.iname,p.desp,p.expired,r.reg_price
+,d.coop,round((r.reg_price*0.015),2) as coop2
+from (t_product p left join t_price r on p.prod_code=r.prod_code)
+left join t_deal d on p.prod_code=d.prod_code
+where p.supp_code='6055'
+) A 
+where T.prod_code = A.prod_code
+====================RBH / JTI 스켄 집계
+SELECT SUBSTRING(D.INAME,1,3),SUM(D.QTY) FROM T_TRAN_DETAILS D 
+LEFT JOIN T_TRAN_GENERAL G ON D.MERCHANT_ID collate Korean_Wansung_CI_AS =G.MERCHANT_ID
+WHERE (G.Z1_DATE>='2016-05-15' AND G.Z1_DATE<='2016-05-21') AND  SUBSTRING(D.INAME,1,3) IN ('RBH','JTI')   --PROD2 IN ('D18','D20')
+GROUP BY SUBSTRING(D.INAME,1,3)
+=====================JTI 담배 집계============================
+select
+'K.B.A' as Wholesale
+,case  
+  when D.store='3' then 'WestMall'
+  when D.store='2' then 'Mobile'
+end as Location
+,G.Client_id as CustNo
+/*,(select c.customer_name from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustNAME
+,(select c.telephone_number from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustPHONE
+
+,G.z1_date as Date
+
+,(select c.address from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustADDR
+,(select c.city from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustCITY
+,(select c.province from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustPROVINCE
+
+,(select c.post_code from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustZIPCode
+*/
+,c.customer_name,c.telephone_number,G.z1_date as Date
+,c.address,c.city,c.province,c.post_code
+,D.UPC_UNIT as UPC,D.INAME AS PRODUCT_DESC,D.QTY AS SaleQTY,(D.QTY * D.UINT_PRICE) AS SaleAmount 
+
+ from 
+(t_tran_details D LEFT JOIN t_tran_general G ON D.merchant_id = G.merchant_id)
+left join KBACMS.dbo.ERP_CUSTOMERINFORMATION c ON g.client_id = c.customer_number
+where D.prod1='TB' 
+--and (D.iname LIKE  '%JTI%' OR D.iname like  '%RBH%')
+and (G.z1_date>='2016-06-23' and G.z1_date <= '2016-07-01') --and D.store='2'
+order by D.STORE DESC, G.z1_date
+5203
+==================내쇼날 national smokerless tobacco 데이터 집계===========
+select
+'K.B.A' as Wholesale
+,case  
+  when D.store='3' then 'WestMall'
+  when D.store='2' then 'Mobile'
+end as Location
+,G.Client_id as CustNo
+,(select c.customer_name from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustNAME
+,(select c.telephone_number from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustPHONE
+,G.z1_date as Date
+,(select c.address from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustADDR
+,(select c.city from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustCITY
+,(select c.province from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustPROVINCE
+,(select c.post_code from kbacms.dbo.ERP_CUSTOMERINFORMATION c where c.customer_number=G.client_id) as CustZIPCode
+,D.UPC_UNIT as UPC,D.INAME AS PRODUCT_DESC,D.QTY AS SaleQTY,(D.QTY * D.UINT_PRICE) AS SaleAmount 
+ from t_tran_details D LEFT JOIN t_tran_general G ON D.merchant_id = G.merchant_id
+where D.prod1='TB' and (D.iname LIKE  '%COPENHAGEN%' OR D.iname like  '%SKOAL%')
+and (G.z1_date>='2016-04-01' and G.z1_date <= '2016-04-30') 
+order by G.z1_date
+====================모바일 PP중복 UPC=====================
+
+
+
+select
+A.desp,A.unit_price,A.tax,A.supplier,A.iname,A.isize,A.prod1,A.id,A.prod_code
+,A.seq,A.which,A.prod2,A.prod3,A.prod2_name,A.upc_unit,	A.upc_box,A.upc_case
+,B.upc_case,A.reg_price,A.inv_price,A.net_price,A.case_price,A.special_unit_price,A.special_case_price,
+A.margin,A.suppliercode,A.supp_code,A.boxpack,A.casepack,A.buyer,A.applied
+,A.point,A.sp_begin,A.sp_end,A.combo_price,A.remix,A.bogof,A.idate,A.expired,
+A.patch_no,A.SALE_TYPE,A.delete_flag
+from t_pos_product_13011 A LEFT JOIN t_pos_product_13011 B ON A.UPC_UNIT=B.UPC_CASE
+WHERE A.PROD1='PP' and (b.upc_case is not null )
+ORDER BY A.UPC_UNIT
+=========스페셜 쿼리 컬럼구조===================
+select
+A.desp,A.unit_price,	A.tax,	A.supplier,	A.iname,	A.isize,	A.prod1,	A.id,	A.prod_code
+,	A.seq,	A.which,	A.prod2,	A.prod3,	A.prod2_name,
+A.upc_unit,	A.upc_box,	A.upc_case,	A.reg_price,	A.inv_price,	A.net_price
+,	A.case_price,	A.special_unit_price,	A.special_case_price,
+A.margin,	A.suppliercode,	A.supp_code,	A.boxpack,	A.casepack,	A.buyer,	A.applied
+,	A.point,	A.sp_begin,	A.sp_end,	A.combo_price,
+A.remix,	A.bogof,	A.idate,	A.expired,	A.patch_no,	A.SALE_TYPE,	A.delete_flag
+
+from t_pos_product_13011 A LEFT JOIN t_pos_product_13011 B ON A.UPC_UNIT=B.UPC_CASE
+WHERE A.PROD1='PP'
+=========T_POS_PRODUCT_13011 중복 올라감=====
+select a.*,b.upc_unit,b.sp_begin,b.sp_end,b.patch_no from 중복_13011_delete$ a
+inner join t_pos_product_13011 b on a.upc_unit collate Korean_Wansung_CI_AS =b.upc_unit
+where b.patch_no<>4615
+
+
+SELECT * FROM T_POS_PRODUCT_13011 WHERE UPC_UNIT='055577106914'
+
+--DELETE T_POS_PRODUCT_13011 WHERE UPC_UNIT='084114112514' AND SP_BEGIN='2016-04-01 00:00:00.000'
+
+SELECT UPC_UNIT,COUNT(UPC_UNIT) AS CNT INTO T_POS_PRODUCT_13011_DBL  FROM T_POS_PRODUCT_13011
+GROUP BY UPC_UNIT
+HAVING COUNT(UPC_UNIT)>=2
+2016-05-01 00:00:00.000
+SELECT B.UPC_UNIT,B.DESP,B.SP_BEGIN,B.SP_END,B.IDATE
+ FROM T_POS_PRODUCT_13011_DBL A INNER JOIN T_POS_PRODUCT_13011 B ON A.UPC_UNIT=B.UPC_UNIT
+
+
+--DELETE T_POS_PRODUCT_13011 
+SELECT UPC_UNIT,DESP,B.SP_BEGIN,B.SP_END,B.IDATE ,B.PATCH_NO FROM T_POS_PRODUCT_13011 B
+WHERE UPC_UNIT IN (SELECT UPC_UNIT FROM T_POS_PRODUCT_13011_DBL) AND PATCH_NO <> 4615
+ORDER BY UPC_UNIT
+AND 
+SP_BEGIN = '2016-04-01 00:00:00.000' 
+--AND SP_END = '2016-04-30 00:00:00.000' 
+ORDER BY PATCH_NO DESC
+
+--DELETE T_POS_PRODUCT_13011 
+WHERE UPC_UNIT IN (SELECT UPC_UNIT FROM T_POS_PRODUCT_13011_DBL)
+AND (SP_BEGIN = '2016-04-01 00:00:00.000' 
+AND SP_END = '2016-04-30 00:00:00.000' )
+ORDER BY PATCH_NO DESC
+
+
+
+AND SP_BEGIN <= '2016-04-018 00:00:00.000'
+
+SELECT * FROM T_POS_PRODUCT_13011
+WHERE SP_BEGIN='2016-04-19 00:00:00.000' AND LEN(UPC_UNIT)=6
+==================AR마감2==================================
+SELECT * FROM T_POS_PRODUCT_13011 WHERE prod1 not in('HB','PP','GR','SM','SN','CN','CL','TB')
+
+select d.*
+from t_tran_details d left join t_tran_general g
+on d.merchant_id=g.merchant_id
+where (g.z1_date >='2016-10-25' and g.z1_date <='2016-10-28')
+and d.store='3' and   D.prod1 ='' --D.prod1 not in('HB','PP','GR','SM','SN','CN','CL','TB')
+order by d.merchant_id
+
+select d.*
+from t_tran_details d left join t_tran_general g
+on d.merchant_id collate Korean_Wansung_CI_AS =g.merchant_id
+where (g.z1_date >='2016-10-25' and g.z1_date <='2016-10-28')
+and d.store='3' and   D.prod1 not in('HB','PP','GR','SN','CN','CL','TB')
+order by d.merchant_id
+
+select d.*
+from t_tran_details d left join t_tran_general g
+on d.merchant_id collate Korean_Wansung_CI_AS =g.merchant_id
+where (g.z1_date >='2016-10-27' and g.z1_date <='2016-10-28')
+and d.store='3' and   d.station='3' and   D.prod2 =''
+order by d.merchant_id
+
+====================================================================
+
+select d.*
+from t_tran_details d left join t_tran_general g
+on d.merchant_id collate Korean_Wansung_CI_AS =g.merchant_id
+where (g.z1_date >='2016-10-25' and g.z1_date <='2016-10-28')
+and d.store='3' and    D.prod2 =''
+order by d.merchant_id
+===========================================
+--update d set prod2='SM'
+from t_tran_details d left join t_tran_general g
+on d.merchant_id collate Korean_Wansung_CI_AS =g.merchant_id
+where (g.z1_date >='2016-10-25' and g.z1_date <='2016-10-28')
+and d.store='3' and    D.prod2 =''
+order by d.merchant_id
+
+============================================
+select top 10 * from AR_DAILY_CLOSING_LOG order by z1_date desc
+
+delete AR_DAILY_CLOSING_LOG where id=3522
+=================AR 마감3========
+update d set d.prod1='SM'
+from t_tran_details d left join t_tran_general g
+on d.merchant_id=g.merchant_id
+where (g.z1_date >='2016-10-25' and g.z1_date <='2016-10-28')
+and d.store='3' and d.prod2=''
+===============AR마감 재작업 로그 지우기==메인서버에서==========
+select a.merchant_id,a.station,a.prod1,a.prod2,a.qty,a.uint_price from t_tran_details a left join t_tran_general g
+on a.merchant_id=g.merchant_id
+where g.z1_date>='2016-12-15' and g.store='3'
+and a.prod2='HBN'
+
+--update a set a.prod2='D29'
+from t_tran_details a left join t_tran_general g
+on a.merchant_id=g.merchant_id
+where g.z1_date>='2016-12-15' and g.store='3'
+and a.prod2='HBN'
+--------------------------------
+select top 10 * from AR_DAILY_CLOSING_LOG order by z1_date desc
+
+delete AR_DAILY_CLOSING_LOG where id=3522
+==================신규 PO 가격 수정=====================
+suppliercode	upc_unit	upc_box
+1002AK	18801037006916	8801037006919동서 순보리차 300G*24 DONGSUH ROASTED BARLEY TEA
+(강원)설원농산 황태포(10마리) 620G*15 DRIED POLLACK
+select * from t_product 
+where suppliercode='1002AK' or upc_ut='8801037006919' or upc_case='18801037006916'
+
+select * from t_product 
+where desp like '%황태%'
+
+DROP TABLE T_KFT_201604_EXIT_NOT
+select * from t_product where upc_ut='883298616456'
+select * from t_product where upc_case='883298615244'
+61524DW	883298616456	883298614353	883298615244
+
+SELECT * from t_kft_20160426_new$ WHERE REG IS NULL
+--DELETE from t_kft_20160426_new$ WHERE REG IS NULL
+select a.*,p.suppliercode as s_code,P.PROD_CODE INTO T_KFT_201604_EXIT_NOT  from t_kft_20160426_new$ a left join t_product p on a.suppliercode=p.suppliercode
+where p.suppliercode is null
+
+SELECT K.*,R.REG_PRICE FROM T_KFT_201604_EXIT K LEFT JOIN T_PRICE R ON K.PROD_CODE=R.PROD_CODE
+
+--UPDATE P SET P.REG_PRICE=B.REG,P.INV_PRICE=B.REG,P.NET_PRICE=B.REG
+FROM T_PRICE P INNER JOIN T_KFT_201604_EXIT B ON P.PROD_CODE = B.PROD_CODE
+=======================================================
+
+
+============================================================
+000000000000000000000000Belmont Blue King. black 20          
+0601000387600006010003876Belmont Blue King. black 20 
+0619000001300006190000013Belmont Blue KS 20 
+0619000002200006190000022Belvedere Select KS 20 
+0619000011200006190000112Belmont Blue King. 20                                                                               000200N      000000          000200pcs                                      ON                                      003-0067407.00
+0619000011300006190000113Belmont Blue King. 25                                                                               000200N      000000          000200pcs                                      ON                                      003-0100895.00
+0619000011400006190000114Belmont Blue Reg. 20                                                                                000200N      000000          000200pcs                                      ON                                      003-0025900.00
+0619000011500006190000115Belmont Blue Reg. 25      
+0619000028700006190000287Belmont Touch KS 20   
+0619000381200006190003812Belmont Silver King. 20
+0619000381300006190003813Belmont Silver King. 25                                                                             000200N      000000          000200pcs                                      ON                                      003-0008794.00
+0619000381400006190003814Belmont Silver Reg. 20                                                                              000200N      000000          000200pcs                                      ON                                      003-0003784.00
+0619000381500006190003815Belmont Silver Reg. 25    
+0619000382000006190003820BELMONT EDGE BLACK KS 20                                                                            000200N      000000          000200pcs                                      ON                                      003-0002496.00
+0619000382200006190003822BELMONT EDGE SILVER KS 20 
+===============지점서버 T_TRAN_DETAILS 지우기===============
+1)WSTMALL 은 
+============================================================= 
+select top 10000 * from t_tran_details_3_w_10 order by merchant_id desc
+SELECT SUBSTRING('K15050131036',0,8)
+
+select TOP 50000 MERCHANT_ID,IDATE FROM T_TRAN_DETAILS WHERE SUBSTRING(MERCHANT_ID,0,8)>='K150501'
+
+select * INTO T_TRAN_DETAILS_150101_150830 FROM T_TRAN_DETAILS WHERE 
+(SUBSTRING(MERCHANT_ID,0,8)>='K150501' AND SUBSTRING(MERCHANT_ID,0,8)<='K1508331')
+--DELETE FROM
+ T_TRAN_DETAILS WHERE 
+(SUBSTRING(MERCHANT_ID,0,8)>='K150501' AND SUBSTRING(MERCHANT_ID,0,8)<='K1508331')
+
+select TOP 100 *  from t_tran_details order by merchant_id desc
+===========마감 수작업으로 올림 SQL=============
+SELECT TOP 30 * FROM [T_RETURN_VOID] 
+WHERE MERCHANT_ID IN
+('R16121739008','R16121739007','R16121739004','R16121739001')
+AND TAX=''
+WHERE DONE IS NULL
+ORDER BY IDATE DESC
+
+--UPDATE T_RETURN_VOID SET TAX='H' 
+ WHERE MERCHANT_ID IN
+('R16121739008','R16121739007','R16121739004','R16121739001')
+AND TAX=''
+
+---------------------------------------------
+insert into T_TRAN_GENERAL select * from [20160416_2_T_TRAN_GENERAL]
+insert into T_TRAN_DETAILS select * from [20160416_2_T_TRAN_DETAILS]
+insert into T_VOID select * from [20160416_2_T_VOID]
+insert into T_RETURN_VOID select * from [20160416_2_T_RETURN_VOID]
+
+
+insert into Z1_SAVE_DATA select * from [20160416_2_Z1_SAVE_DATA]
+insert into X1_SAVE_DATA select * from [20160416_2_X1_SAVE_DATA]
+insert into X1_CHEQUE_SAVE select * from [20160416_2_X1_CHEQUE_SAVE]
+insert into X1_CREDIT_CARD_SAVE select * from [20160416_2_X1_CREDIT_CARD_SAVE]---1
+insert into X1_DEBIT_SAVE select * from [20160416_2_X1_DEBIT_SAVE]
+insert into X1_CREDIT_SAVE select * from [20160416_2_X1_CREDIT_SAVE]
+insert into X1_CASH_INPUT_SAVE select * from [20160416_2_X1_CASH_INPUT_SAVE]
+insert into TOBACCO_SALES select * from [20160416_2_TOBACCO_SALES]
+----------------------------------------------------------
+--insert into T_TRAN_GENERAL select * from [20164274T_TRAN_GENERAL]
+--insert into T_TRAN_DETAILS select * from [20164274T_TRAN_DETAILS]
+--insert into T_VOID select * from [20164274T_VOID]
+--insert into T_RETURN_VOID select * from [20164274T_RETURN_VOID]
+
+
+--insert into Z1_SAVE_DATA select * from [20164274Z1_SAVE_DATA]
+--insert into X1_SAVE_DATA select * from [20164274X1_SAVE_DATA]
+insert into X1_CHEQUE_SAVE select * from [20160416_2_X1_CHEQUE_SAVE]
+insert into X1_CREDIT_CARD_SAVE select * from [20160416_2_X1_CREDIT_CARD_SAVE]---1
+--insert into X1_DEBIT_SAVE select * from [20164274X1_DEBIT_SAVE]
+--insert into X1_CREDIT_SAVE select * from [20164274X1_CREDIT_SAVE]
+--insert into X1_CASH_INPUT_SAVE select * from [20164274X1_CASH_INPUT_SAVE]
+--insert into TOBACCO_SALES select * from [20164274TOBACCO_SALES]
+--insert into X1_COUPON_SAVE select * from [20164274X1_COUPON_SAVE]
+-----------------------------------------
+--insert into T_TRAN_GENERAL select * from B_20161130_32T_TRAN_GENERAL
+--insert into T_TRAN_DETAILS select * from B_20161130_32T_TRAN_DETAILS
+--insert into T_VOID select * from [20164274T_VOID]
+--insert into T_RETURN_VOID select * from B_20161130_32_T_RETURN_VOID
+
+--insert into TOBACCO_SALES select * from B_20161130_32TOBACCO_SALES
+--insert into X1_CASH_INPUT_SAVE select * from B_20161130_32X1_CASH_INPUT_SAVE
+--insert into X1_CHEQUE_SAVE select * from B_20161130_32X1_CHEQUE_SAVE
+--insert into X1_COUPON_SAVE select * from B_20161130_32X1_COUPON_SAVE
+--insert into X1_CREDIT_SAVE select * from B_20161130_32X1_CREDIT_SAVE
+--insert into X1_DEBIT_SAVE select * from B_20161130_32X1_DEBIT_SAVE
+--insert into X1_SAVE_DATA select * from B_20161130_32X1_SAVE_DATA
+
+--insert into Z1_SAVE_DATA select * from B_20161130_32Z1_SAVE_DATA
+============================
+
+--insert into X1_CREDIT_SAVE select * from T_201607028_X1_CREDIT_SAVE
+--insert into TOBACCO_SALES select * from T_20160708_TOBACCO_SALES
+--insert into T_RETURN_VOID select * from T_20160728_T_RETURN_VOID
+--insert into T_TRAN_DETAILS select * from T_20160728_T_TRAN_DETAILS
+--insert into T_TRAN_GENERAL select * from T_20160728_T_TRAN_GENERAL
+--insert into T_VOID select * from T_20160728_T_VOID
+--insert into X1_CASH_INPUT_SAVE select * from T_20160728_X1_CASH_INPUT_SAVE
+--insert into X1_DEBIT_SAVE select * from T_20160728_X1_DEBIT_SAVE
+--insert into X1_SAVE_DATA select * from T_20160728_X1_SAVE_DATA
+--insert into Z1_SAVE_DATA select * from T_2016728_Z1_SAVE_DATA
+===================201611_01====================================
+select * from WT_TRAN_DETAILS_A1 order by upc_unit
+select * from T_RETURN_VOID where store='3'
+--insert into T_RETURN_VOID select * from WT_RETURN_VOID_A1
+
+select * from T_TRAN_DETAILS where store='3'
+--insert into T_TRAN_DETAILS select * from WT_TRAN_DETAILS_A1
+
+select * from T_TRAN_GENERAL where store='3'
+--insert into T_TRAN_GENERAL select * from WT_TRAN_GENERAL_A1
+
+select * from T_TRAN_GENERAL where store='3'
+--insert into X1_CREDIT_SAVE select * from WX1_CREDIT_SAVE_A1
+
+--insert into TOBACCO_SALES select * from WTOBACCO_SALES_A1
+--insert into X1_CREDIT_CARD_SAVE select * from WX1_CREDIT_CARD_SAVE_A1
+--insert into X1_COUPON_SAVE select * from WX1_COUPON_SAVE_A1
+--insert into X1_CHEQUE_SAVE select * from WX1_CHEQUE_SAVE_A1
+select top 10 * from X1_CASH_INPUT_SAVE order by cdate desc
+--insert into X1_CASH_INPUT_SAVE select * from WX1_CASH_INPUT_SAVE_A1
+--insert into X1_DEBIT_SAVE select * from WX1_DEBIT_SAVE_A1
+--insert into X1_SAVE_DATA select * from WX1_SAVE_DATA_A1
+select top 10 * from Z1_SAVE_DATA order by z1_date desc
+--insert into Z1_SAVE_DATA select * from WZ1_SAVE_DATA_A1
+===========================================================
+select top 100 * from TOBACCO_SALES order by cdate desc 
+
+insert into Z1_SAVE_DATA select * from [z3_Z1_SAVE_DATA_A31]--select top 10 * from z1_save_data order by z1_date desc
+insert into X1_SAVE_DATA select * from [z3_X1_SAVE_DATA_A31]--select top 10 * from X1_SAVE_DATA order by x1_date desc
+insert into X1_CHEQUE_SAVE select * from [z3_X1_CHEQUE_SAVE_A32]--select top 10 * from X1_CHEQUE_SAVE  order by cdate desc
+insert into X1_CREDIT_CARD_SAVE select * from [z3_X1_CREDIT_CARD_SAVE_A32]--select top 10 * from X1_CREDIT_CARD_SAVE  order by cdate desc
+insert into X1_DEBIT_SAVE select * from [z3_X1_DEBIT_SAVE_A31]--select top 10 * from X1_DEBIT_SAVE  order by cdate desc
+insert into X1_CREDIT_SAVE select * from [z3_X1_CREDIT_SAVE_A32]--select top 10 * from X1_CREDIT_SAVE  order by cdate desc
+insert into X1_CASH_INPUT_SAVE select * from [z3_X1_CASH_INPUT_SAVE_A31]--select top 10 * from X1_CASH_INPUT_SAVE  order by cdate desc
+insert into TOBACCO_SALES select * from [z3_TOBACCO_SALES_A31]
+
+insert into X1_COUPON_SAVE select * from [z3_X1_COUPON_SAVE_A32]
+
+select  * from X1_CHEQUE_SAVE  
+where client_name=''
+order by cdate desc
+
+----------------------------------------------------------
+insert into X1_DEBIT_SAVE select * from [20160416_2_X1_DEBIT_SAVE]
+
+select top 50 * from TOBACCO_SALES order by cdate desc
+
+select * from [20160416_2_TOBACCO_SALES]
+
+====업체별 판매 s_unit변경==
+--update t_product set s_unit=1  where supp_code='6017'
+
+select a.prod_code,a.iname,a.desp,a.size,a.boxpack,a.casepack,a.s_unit,r.inv_price
+from t_product a left join t_price r on a.prod_code=b.prod_code
+where supp_code='6017'
+
+======입출고 모니터 SQL==========
+SELECT TOP 100 * FROM T_TRAN_DETAILS_SUM_QTY_ALL  ORDER BY IDATE DESC
+select top 100 * from T_INCOMMING_GENERAL where supp_code='419a'
+select top 100 * from T_INCOMMING_detail where in_id='PSR16322419A1'
+select top 100 * from T_out_GENERAL where supp_code='419a'
+select top 100 * from T_out_detail where in_id='PSR16322419A1'
+SELECT TOP 50 * FROM T_PUR_ORD_GENERAL 
+SELECT TOP 50 * FROM T_PUR_ORD_GENERAL WHERE ORD_ID='16316419A1' OR ORD_ID='163282A331'
+16316419A1 '419a' 'PSR16322419A1'
+
+BEGIN TRANSACTION  
+Declare @out_id varchar(15) Select @out_id=po_id From T_INCOMMING_GENERAL where in_id='PSR16322419A1'; 
+Delete From T_INCOMMING_DETAIL where in_id = 'PSR16322419A1' and prod_code ='' 
+and in_id_seq =  
+Delete From T_OUT_DETAIL where out_id=@out_id  and prod_code =''  and out_id_seq =  COMMIT;
+
+select substring('PSR16322419A1',3,)
+
+
+select b.upc_ut,b.iname,b.desp,b.size,b.boxpack,b.casepack
+,a.of_qty,a.mb_qty,a.wt_qty,a.ws_qty,Convert(int,a.tot_qty)
+,a.reg_price,a.ord_price,a.net_pricE
+,(d.oi1+d.oi2+d.oi3+d.chq+d.oa+d.bb+d.coop+d.promo+d.ad+d.cd+d.deal1+d.deal2) as deal
+,a.prod_code
+,isnull(b.s_unit,1)
+,isnull(b.S_UNIT,1) as s_unit
+ From T_PUR_ORD_DETAIL a left join t_product b on a.prod_code=b.prod_code
+ left join T_DEAL d on a.prod_code=d.prod_code
+ where a.ord_id='16316419A1';
+
+SELECT * FROM T_PRODUCT WHERE SUPP_CODE='419A'
+
+
+========================================================
+
+===보내는 핸들=============
+Frm_Main frm_main = new Frm_Main("tb", g_tb, "merchant_id", "cust_phone", "server", "hall", g_tax, g_discount_per, CD5); //(오더타입,버튼번호,merchant_id,고객전화key.서버)
+            frm_main.SetHandle = this.Handle;
+            FrmShow(frm_main);
+====찾아오는 핸들===========
+private IntPtr formHandle = IntPtr.Zero; //핸들 초기화
+        public IntPtr SetHandle
+        {
+            set { this.formHandle = value; }
+        }
+
+ Control ctl = Control.FromHandle(this.formHandle);
+                if (ctl == null)
+                {
+                    //MessageBox.Show("Another Form is null!");
+                    return;
+                }
+                Frm_Table form1 = (Frm_Table)ctl;
+                form1.Check_Table_Status_F5();
+===============================================
+public delegate void SendMsg(string msg);
+public event SendMsg SendMsg;
+
+Frm_Main frm_main = new Frm_Main("tb", g_tb, "merchant_id", "cust_phone", "server", "hall", g_tax, g_discount_per, CD5); //(오더타입,버튼번호,merchant_id,고객전화key.서버)
+            frm_main.SetHandle = this.Handle;
+            FrmShow(frm_main);
+        }
+===ㅏ================재고관리===========================
+SELECT * FROM T_INCOMMING_GENERAL ORDER BY IDATE DESC
+SELECT * FROM T_INCOMMING_GENERAL WHERE ORD_ID='1631420061'
+SELECT * FROM T_INCOMMING_GENERAL WHERE in_ID='PSR1631420062'
+
+--DELETE T_INCOMMING_GENERAL WHERE IN_ID='PSR1631420041'
+
+SELECT * FROM T_INCOMMING_DETAIL WHERE IN_ID='PSR1631420062'
+SELECT * FROM T_PUR_ORD_DETAIL WHERE ORD_ID='1631420061'
+
+SELECT * FROM T_PRODUCT WHERE PROD_CODE='CN0020000099800'========
+====================================
+select * from t_supplier order by supplier
+select prod_code as in_prod_code,p_mt as in_p_mt
+                 ,[1] as in1,[2]  as in2,[3] as in3,[4] as in4,[5] as in5
+	        from
+	       (
+            Select i.prod_code,i.p_mt ,i.p_wk,i.qty1 qty1 
+            From T_INCOMMING_DETAIL i
+             where substring(i.idate1,1,4) = '2016' and i.p_mt = '03'
+                   and substring(in_id,9,4) = '4059'
+                  --and i.p_wk='4'
+            )piv
+             pivot
+                 (sum(qty1) for p_wk in ([1],[2],[3],[4],[5])) as week
+select substring('2016/03/10',9,2)
+select 
+a.supp_code
+,supplier
+,prod_code,prod1,prod2,prod3,suppliercode,upc_ut,upc_box,upc_case,iname,desp,size,size_unit
+,boxpack,casepack,caselayer,casepallet,po_unit,inv_unit
+ from t_product a left join t_supplier b ON a.supp_code=b.supp_code
+where a.supp_code in
+(
+'2012','2060','2028','2001','200B','4204','200A','9901','2073','2090','209A','2006','4195','419C','419A','419B','2039'
+,'6010','400C','2015','2058','2004','4184','401B','4080','2A33','2A32','2B32','2032','2019','4205','2017','2046','2018'
+,'203B','2030','203A','4183','2095','2092','2037','2064','2069','204A','6062','4138','2099','2023')
+order by supplier,s1,s2,s3 
+====================================================
+
+select prod_code as in_prod_code,p_mt as in_p_mt
+,[01] as in1,[02] as in2,[03] as in3,[04] as in4,[05] as in5,[06] as in6,[07] as in7,[08] as in8,[09] as in9,[10] as in10
+,[11] as in11,[12] as in12,[13] as in13,[14] as in14,[15] as in15,[16] as in16,[17] as in17,[18] as in18,[19] as in19,[20] as in20
+,[21] as in21,[22] as in22,[23] as in23,[24] as in24,[25] as in25,[26] as in26,[27] as in27,[28] as in28,[29] as in29,[20] as in20
+,[31] as in31
+From
+(
+  Select i.prod_code,i.p_mt,substring(i.idate1,9,2) as p_day,i.qty1 as qty1
+  From T_INCOMMING_DETAIL i
+  Where substring(i.idate1,1,4) = '2016' and i.p_mt = '03' and substring(in_id,9,4) = '1007'
+) piv
+  pivot
+     (sum(qty1) for   p_day --substring(i.idate1,9,2) 
+     in (
+[01],[02],[03],[04],[05],[06],[07],[08],[09],[10]
+,[11],[12],[13],[14],[15],[16],[17],[18],[19],[20]
+,[21],[22],[23],[24],[25],[26],[27],[28],[29],[30]
+,[31]
+)) as iday
+
+
+
+
+Select i.prod_code,i.p_mt,substring(i.idate1,9,2) as p_day,i.qty1 as qty1
+  From T_INCOMMING_DETAIL i
+  Where substring(i.idate1,1,4) = '2016' and i.p_mt = '02' and substring(in_id,9,4) = '4059'
+==========================================
+Microsoft Visual Studio Ultimate  2013
+BWG7X-J98B3-W34RT-33B3R-JVYW9
+
+============================
+Microsoft Visual Studio Professional 2013
+XDM3T-W3T3V-MGJWK-8BFVD-GVPKY
+============================
+Microsoft Visual Studio Premium 2013
+FBJVC-3CMTX-D8DVP-RTQCT-92494
+===========재고고ㅏㅏㄴ리======인벤토리 고=============
+--===================================================
+SELECT DISTINCT
+'2016' AS IYEAR,1 AS ISEQ,'2' AS IMONTH
+,b.prod_code as m_prod_code
+,a.upc_unit as m_upc_unit 
+,1 as m_seqp
+,a.qty as m_qty
+,0 as m_qty_modi
+,b.supp_code as m_supp_code
+,b.prod1 as m_prod1
+,'20160303' as idate
+into T_MONTHLY_CONFIRM_before
+FROM  T_2016_QTY a inner join T_PRODUCT b ON a.upc_unit = b.upc_ut
+ORDER BY a.upc_unit
+
+select * from T_MONTHLY_CONFIRM
+select * from T_MONTHLY_CONFIRM_before--drop table T_MONTHLY_CONFIRM_before
+--update 
+
+--빠진것들
+select a.upc_unit,b.m_upc_unit,a.qty from T_2016_QTY a left join T_MONTHLY_CONFIRM_before b
+ON a.upc_unit= b.m_upc_unit
+where m_upc_unit is null order by upc_unit
+
+---t_product 에서 비교---찾아보니 t_proecut에 없었다/ 재고조사 upc 상품이 ...
+select * from t_product where upc_ut='00065912000043'
+---T_MONTHLY_CONFIRM_before 을 T_MONTHLY_CONFIRM 에 넣기
+--insert into T_MONTHLY_CONFIRM where m_upc_unit='00065912000043'
+select * from T_MONTHLY_CONFIRM where m_upc_unit='067311026334'
+
+---넣고나서 
+select * from T_MONTHLY_CONFIRM order by m_upc_unit
+
+--- T_MONTHLY_CONFIRM_JUST에도 복사함
+
+--insert into T_MONTHLY_CONFIRM_JUST
+(iyear,imonth,m_prod_code,m_upc_unit,m_seq,m_qty,m_qty_modi,m_supp_code,m_prod1)
+select iyear,imonth,m_prod_code,m_upc_unit,m_seq,m_qty,m_qty_modi,m_supp_code,m_prod1 from T_MONTHLY_CONFIRM
+=========고객감사후 재 로딩 2016년2월=========
+SELECT B.UNIT_PRICE AS BB_UNIT_PRICE,B.SPECIAL_UNIT_PRICE AS BB_SPECIAL_UNIT_PRICE,B.SP_BEGIN AS BB_SP_BEGIN ,B.SP_END AS BB_SP_END,B.PATCH_NO AS BB_PATCH_NO,
+A.* INTO  CATOSP201602_BB
+FROM CATOSP201602 A LEFT JOIN T_POS_PRODUCT_13011 B  ON A.UPC_UNIT collate Korean_Wansung_CI_AS =B.UPC_UNIT collate Korean_Wansung_CI_AS
+
+SELECT * FROM CATOSP201602_BB
+======3000이상고객===========
+select Q.*, c.customer_name,c.owner_name,c.telephone_number,c.address,c.city,c.province,c.post_code
+from
+(
+select client_id,sum(net_sales) as s_sale from t_tran_general 
+where substring(merchant_id,2,2)='15' 
+group by client_id
+having sum(net_sales)>=3000
+) Q left join [kbacms].dbo.ERP_CUSTOMERINFORMATION c on Q.client_id=c.customer_number
+order by Q.s_sale desc
+======Ocean Food Clinet sql 리콜========
+select * from Oceam_Claim2016$
+select top 1 * from t_tran_details
+
+select a.upc,b.merchant_id,b.iname,b.qty 
+from Oceam_Claim2016$ a left join t_tran_details b on a.upc=b.upc_unit
+
+select substring('K15122434062',8,1)
+select top 1 * from [kbacms]..ERP_CUSTOMERINFORMATION
+
+
+select g.client_id,substring(Q.merchant_id,2,6) as Date,substring(Q.merchant_id,8,1) as Branch
+,C.customer_name,C.owner_name,c.address,c.city,c.province,c.post_code,c.telephone_number
+,Q.merchant_id,Q.upc_unit,Q.iname,Q.s_sum from
+(
+select a.merchant_id,a.upc_unit,a.iname,sum(a.qty) as s_sum from t_tran_details a 
+where a.upc_unit='05970405'
+group by a.merchant_id,a.upc_unit,a.iname 
+) Q left join t_tran_general g on Q.merchant_id = g.merchant_id 
+left join  [kbacms]..ERP_CUSTOMERINFORMATION c ON g.client_id=C.customer_number
+where g.z1_date >='2016-06-16'
+order by g.client_id,q.merchant_id desc
+
+======지난 스페셜 및 고객 감사 자료 추출하기 from T_POS_PRODUCT_13011에서======
+select 
+desp,unit_price,tax,supplier,iname,isize,prod1,id,prod_code,seq,which,prod2,prod3,prod2_name,upc_unit,upc_box,upc_case,reg_price
+,inv_price,net_price,case_price,special_unit_price,special_case_price,margin,suppliercode,supp_code,boxpack,casepack
+,buyer,applied,point,sp_begin,sp_end,combo_price,remix,bogof,idate,expired,patch_no,SALE_TYPE,delete_flag
+
+from t_pos_product_13011
+--order by patch_no desc
+where sp_end ='2015-12-09 00:00:00.000'
+order by prod1,desp
+
+=====시가 이름바꾸어 재발행 해 주기====
+select top 100 * from t_tran_details where substring(merchant_id,1,7)='k160108' and store='3'
+and iname like  '%sweet%' and prod1='tb'
+
+select * from t_tran_general where merchant_id in (
+'K16010831001',
+'K16010833027',
+'K16010834023',
+'K16010833044')
+
+
+'K16010831001',----230445
+'K16010833027',----33000050
+'K16010834023',----30672
+'K16010833044')-----330463
+
+====shim , na sales===========
+
+select substring(d.merchant_id,2,4) as imon ,sum(d.qty * d.uint_price) as d_sum 
+from t_tran_details  d left join t_tran_general g on d.merchant_id=g.merchant_id
+where g.client_id='302076'
+and (substring(g.merchant_id,2,4)>='1309' and substring(g.merchant_id,2,4)<='1601')
+and d.prod1='TB'
+group by substring(d.merchant_id,2,4)
+order by substring(d.merchant_id,2,4)
+
+
+select substring(g.merchant_id,2,4) as imonth,sum(g.net_sales) as s_sum from t_tran_general g 
+where g.client_id='302076'
+and substring(g.merchant_id,2,4)>='1309' and substring(g.merchant_id,2,4)<='1601'
+group by substring(g.merchant_id,2,4)
+order by substring(g.merchant_id,2,4)
+
+
+=========ar에서 지점마감 날짜 틀렸을대====
+select top 10 * from AR_DAILY_CLOSING_LOG order by z1_date desc
+
+select top 10 * from BRANCH_DAILY_REPORT order by date desc
+Z132001456,Z133001085,Z134000304
+2015-12-30 00:00:00
+--update BRANCH_DAILY_REPORT set date='2015-12-31 00:00:00' where report_id='1854'
+===========coke supplier 코드 찾기 및 대치========
+select a.*,b.iname,b.desp,b.prod_code,b.supp_code,b.suppliercode
+from coke_new_2016$ a left join 
+( select iname,desp,prod_code,supp_code,suppliercode from t_product
+where supp_code='3003'
+) b 
+on a.code=b.suppliercode 
+order by a.iname
+
+===========PO 새로 만들기================
+select * from t_product_jti$  -- delete t_product_jti$ where prod_code is null
+select * from t_price_jti$ -- delete t_price_jti$ where prod_code is null
+select * from t_deal_jti$ -- delete t_deal_jti$ where prod_code is null
+================================================
+select * from t_product where supp_code='1007'
+--update t_product set loc='d' where expired='0' and supp_code='4114'
+--update t_product set expired='1' where expired='0' and supp_code='4114'
+--insert into t_product select * from t_product_jti$
+=========================================================
+select * from t_price where supp_code='1007'
+--update t_price set expired='1' where expired='0' and supp_code='4114'
+--insert into t_price select * from t_price_jti$
+=========================================================e
+select top 1 * from t_deal where supp_code='1007'
+select top 1 * from t_deal_jti$ 
+--update t_deal set idate='20160102' where supp_code='4114'
+--insert into t_deal select * from t_deal_jti$
+--update t_deal_jti$ set idate='',cdate=''
+select a.* from coke_new_2016$ a
+
+===========시가 타바코 리턴 자료==========
+select X.*,Y.s_qty From
+(
+select Q.client_id,C.owner_name,C.customer_name,Q.s_sum 
+from
+(select g.client_id,sum(d.qty) s_sum from t_tran_general g left join t_tran_details d on g.merchant_id=d.merchant_id
+where 
+(substring(g.merchant_id,2,6)>='120101' and substring(g.merchant_id,2,6)<='151231') and
+g.client_id in
+('350666','316019','32368','350517','30485','8094','350310','350109','350289','22013','32030',
+'350614',
+'31218',
+'31687',
+'307446',
+'350181',
+'16168',
+'32391','16168','350512','230704','230529')
+and d.prod1='TB' and prod2 in ('D18','D20')
+group by client_id) as Q
+left join [kbacms]..ERP_CUSTOMERINFORMATION c ON Q.client_id=C.customer_number
+) X left join
+(
+select client_id,sum(ret_qty) as s_qty from T_RETURN_VOID 
+where prod_code='TB' and
+(substring(merchant_id,1,5)>='R1201') and (substring(merchant_id,1,5)<='R1512')
+group by client_id
+) Y ON X.client_id = Y.client_id
+
+-==================================
+====상위50========
+select top 50 client_id,sum(ret_qty) as s_qty from T_RETURN_VOID 
+where prod_code='TB' and
+(substring(merchant_id,1,5)>='R1201') and (substring(merchant_id,1,5)<='R1512')
+group by client_id
+order by sum(ret_qty) asc
+
+=====상위50 매출 리턴=================
+select X.*,Y.s_qty From
+(
+select Q.client_id,C.owner_name,C.customer_name,Q.s_sum 
+from
+(select g.client_id,sum(d.qty) s_sum from t_tran_general g left join t_tran_details d on g.merchant_id=d.merchant_id
+where 
+(substring(g.merchant_id,2,6)>='120101' and substring(g.merchant_id,2,6)<='151231') and
+g.client_id in
+(
+'19145',
+'19240',
+'30676',
+'33000049',
+'4895',
+'30662',
+'350366',
+'25964',
+'270916',
+'31495',
+'13838',
+'6640',
+'315033',
+'30311',
+'230445',
+'350310',
+'20823',
+'30351',
+
+
+'32433',
+'31284',
+'350289',
+'350677',
+'30612',
+'350006',
+'399999',
+'30485',
+'31846',
+'33000012',
+'371144',
+'12127',
+'31778',
+'350508',
+'8089',
+'32162',
+'330324',
+'212042',
+'220046',
+'31940',
+'32167',
+'350125',
+'299999',
+'307012',
+'350358',
+'350454',
+'16168',
+'271130',
+'321016',
+'33000004',
+'350363',
+'270525')
+and d.prod1='TB' and prod2 in ('D18','D20')
+group by client_id) as Q
+left join [kbacms]..ERP_CUSTOMERINFORMATION c ON Q.client_id=C.customer_number
+) X left join
+(
+select client_id,sum(ret_qty) as s_qty from T_RETURN_VOID 
+where prod_code='TB' and
+(substring(merchant_id,1,5)>='R1201') and (substring(merchant_id,1,5)<='R1512')
+group by client_id
+) Y ON X.client_id = Y.client_id
+
+===============po 등록 sql==========================
+=================반드시 expired='0'으로 해야한다
+====================================================
+select top 1 *  from t_product
+select * from vidal_product$
+select * from vidal_price$
+select * from vidal_deal$
+select * from t_deal where supp_code='3068'
+--update twin_price$ set idate='12/17/2015' where supp_code='2099'
+--update vidal_deal$ set idate='',cdate='' where supp_code='2099'
+--update vidal_product$ set idate='',suppliercode='' 
+--update vidal_product$ set suppliercode=upc_case
+--drop table twin_product$
+--drop table twin_price$
+--drop table twin_deal$
+select * from t_supplier 
+select * from t_product where supp_code='2099'
+select * from t_price where supp_code='2099'
+select * from t_deal where supp_code='2099'
+
+--update t_product set expired='0' where supp_code='2099'
+--delete t_product where supp_code='4220'
+--delete t_price where supp_code='4220'
+--delete t_deal where supp_code='4220'
+
+
+--insert into t_product select * from vidal_product$
+--insert into t_price select * from vidal_price$
+--insert into t_deal select * from vidal_deal$
+--insert into t_product select * from t_product_20150316 where supp_code='4022'
+
+select * from t_deal where supp_code='3068'
+
+select * from t_product_20150316 where supp_code='4022'
+===============웨스트/모바일 고객===========
+select Q.*
+,c.customer_name,c.owner_name,C.ADDRESs,C.City,C.post_code,C.telephone_number,c.kor_for from
+(
+select  client_id,sum(net_sales) as s_net from t_tran_general 
+where store='3' and substring(merchant_id,2,2)='15'
+group by client_id ) as Q
+Left join 
+[kbacms]..ERP_CUSTOMERINFORMATION c
+on Q.client_id = c.customer_number
+===============오퍼스-웨스드 고객==========
+select  Q.*,X.sales 
+,c.customer_name,c.owner_name,C.ADDRESs,C.City,c.post_code,C.TELEPHONE_NUMBER,c.kor_for from
+(
+select g.client_id,sum(g.net_sales) as sales from t_tran_general g
+where substring(g.merchant_id,2,4)>='1301' And substring(g.merchant_id,2,4)<='1312'
+and g.store='1'
+group by g.client_id
+) Q left join 
+(
+select g.client_id,sum(g.net_sales) as sales from t_tran_general g
+where substring(g.merchant_id,2,4)>='1501' and substring(g.merchant_id,2,4)<='1512'
+and g.store='2'
+group by g.client_id
+) X 
+On Q.client_id = X.client_id
+Left join 
+[kbacms]..ERP_CUSTOMERINFORMATION c
+on Q.client_id = c.customer_number
+===============직접 메인에 t_tran_general, t_tran_details, t_void 넣기==================================
+insert into t_tran_details
+			   select * from [216.191.202.84].kba_pos.dbo.t_tran_details
+			where store = 3 and station = @var_station and merchant_id > @max_id_westmall
+
+select max(merchant_id) from t_tran_general
+		where store = 3 and station = 2
+
+select top 1 * from t_tran_details
+		where store = '3' and station ='2' and substring(merchant_id,1,7)='k151123'
+order by merchant_id desc
+
+==========================
+insert into t_tran_general
+			   select * from [216.191.202.84].kba_pos.dbo.t_tran_general
+			where store = '3' and station = '2' and merchant_id >= 'k15112432001'
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+			insert into t_tran_details
+			   select * from [216.191.202.84].kba_pos.dbo.t_tran_details
+			where store = '3' and station = '2' and merchant_id >= 'k15112432001'
+
+			insert into t_void
+			   select * from [216.191.202.84].kba_pos.dbo.t_void
+			where store = 3 and station = @var_station and merchant_id > @max_id_westmall
+
+===========
+select * from  t_tran_details where store = '3' and station = '2' and merchant_id >= 'k15112432001'
+select * from  t_void where store = '3' and station = '2' and merchant_id >= 'k15112432001'
+==============z1 마감 sql=====================================================================================
+==============z1 마감 sql=====================================================================================
+2015-10-21 09:07:11.000
+select top 100 * from TOBACCO_SALES order by cdate desc
+--delete from tobacco_sales where cdate='2015-10-21 09:07:11.000'
+select top 100 * from x1_cheque_save order by cdate desc
+--
+select top 100 * from z1_save_data where  store='3' and station='2' order by z1_date desc
+--delete from z1_save_data where z1_date >='2015-11-25 00:00:11.000' and store='3' and station='4'
+--UPDATE z1_save_data set z1_date='2016-01-21 05:04:49.000' where z1_no='Z132001474'
+
+select top 100 * from x1_save_data where  store='3' and station='2' order by x1_date desc
+--delete from x1_save_data where store='3' and station='4' and x1_date >='2015-11-25 00:00:11.000'
+--UPDATE x1_save_data set x1_date='2016-01-21 05:04:47.000' where x1_no='X132001707'
+
+select top 100 * from x1_credit_save where store='3' and station='2' order by cdate desc
+--delete from x1_credit_save where store='3' and station='4' and cdate >='2015-11-25 00:00:11.000'
+--UPDATE x1_credit_save set cdate='2016-01-21 05:04:47.000' where x1_no='X132001707'
+
+select top 100 * from x1_cheque_save where store='3' and station='2' order by cdate desc
+--delete from x1_cheque_save where store='3' and station='4' and cdate >='2015-11-25 00:00:11.000'
+
+select top 100 * from x1_coupon_save where store='3' and station='2' order by cdate desc
+--delete from x1_coupon_save where store='3' and station='4' and cdate >='2015-11-25 00:00:11.000'
+
+
+select top 100 * from x1_cash_input_save where store='3' and station='2' order by cdate desc
+--delete from x1_cash_input_save where store='3' and station='4' and cdate >='2015-11-25 00:00:11.000'
+--UPDATE x1_cash_input_save set cdate='2016-01-21 05:04:47.000' where x1_no='X132001707'
+
+select top 100 * from TOBACCO_SALES where store='3' and station='2' order by cdate desc
+--delete from TOBACCO_SALES where store='3' and station='4' and cdate >='2015-11-25 00:00:11.000'
+--UPDATE TOBACCO_SALES set cdate='2016-01-21 05:04:47.000' where x1_no='X132001707'
+
+select top 100 * from X1_DEBIT_SAVE where store='2' and station='2' order by cdate desc
+
+select top 100 * from X1_CREDIT_CARD_SAVE where store='2' and station='2' order by cdate desc
+
+select top 100 * from t_tran_general where idate>='2016-01-13 00:17:51.000' and store='3' and station='2'
+
+=====================================
+
+
+select * from t_tran_general
+where store = 3 and station = 2
+and merchant_id>='K16012032025'
+--substring(merchant_id,1,7)>='k160121'
+order by merchant_id desc
+
+select * from t_tran_details
+where store = 3 and station = 4
+and and merchant_id>='K16012032025'
+--substring(merchant_id,1,7)>='k151124'
+order by merchant_id desc
+
+
+--delete t_tran_general
+where store = 3 and station = 4
+and substring(merchant_id,1,7)='k151124'
+
+--delete t_tran_details
+where store = 3 and station = 4
+and substring(merchant_id,1,7)='k151124'
+
+----delete t_void
+where store = 3 and station = 4
+and substring(merchant_id,1,7)='k151124'
+
+----UPDATE t_tran_general set z1_date='2016-01-21 00:00:00.000' 
+where store = 3 and station = 2
+and merchant_id>='K16012032025'
+--substring(merchant_id,1,7)>='k160121
+
+============================================4
+============================================4
+
+==========
+select * from t_tran_general
+where store = 2 and station = 1
+and merchant_id >='M15122921011'
+order by merchant_id desc
+--DELETE t_tran_general where store = 2 and station = 1 and merchant_id >='M15122921011'
+
+select * from t_tran_details
+where  store = 2 and station = 1
+and merchant_id >='M15122921011'
+order by merchant_id desc
+--DELETE t_tran_details where store = 2 and station = 1 and merchant_id >='M15122921011'
+
+--delete t_tran_general
+where store = 3 and station = 4
+and substring(merchant_id,1,7)='k151124'
+
+--delete t_tran_details
+where store = 3 and station = 4
+and substring(merchant_id,1,7)='k151124'
+
+select * from t_void where  store = 2 and station = 1
+and merchant_id >='M15122921011'
+----delete t_void
+where  store = 2 and station = 1
+and merchant_id >='M15122921011'
+
+select top 100 * from t_return_void
+where  store = 2 order by idate desc and station = 8
+and merchant_id >='M15122921011'
+===========================================================
+
+
+K15112334060
+K15112334061
+
+--delete t_tran_general
+where store = 3 and station = 4
+and merchant_id='K15112334060'
+--and substring(merchant_id,1,7)='k151124'
+
+--delete t_tran_details
+where store = 3 and station = 4
+and merchant_id='K15112334061'
+
+=======================================
+Download MDAC 2.6 or later, and then download the redistributable Jet 4.0 Service Pack 8 from article 239114.
+=====================================
+select b.cus#,a.* from t_kor_comm_share$ a left join 주주매출리스트 b on a.shno=b.주주번호
+select * from t_comm_share
+select * from 주주매출리스트
+select * from t_kor_comm_share$
+
+SELECT A.* 
+,(SELECT COUNT(B.MERCHANT_ID) FROM [KBAPOS].DBO.T_TRAN_GENERAL B
+WHERE (SUBSTRING(B.MERCHANT_ID,2,4)>='1409' AND SUBSTRING(B.MERCHANT_ID,2,4)<='1409')
+AND (B.CLIENT_ID = A.KBA_NO))
+,C.TELEPHONE_NUMBER
+FROM  T_2015_SHARE_KBA_LIST A LEFT JOIN ERP_CUSTOMERINFORMATION C ON A.KBA_NO=C.CUSTOMER_NUMBER
+============================================
+SET NOCOUNT ON
+select a.desp,a.iname,a.isize,a.unit_price,b.unit_price,(a.unit_price-b.unit_price),a.upc_unit,a.special_unit_price,b.special_unit_price,b.sp_begin,b.sp_end
+--,b.special_unit_price,b.sp_begin,b.sp_end 
+from T_2015_11_FLY_MB$ a left join T_POS_PRODUCT_13011 b  
+on a.upc_unit collate Korean_Wansung_CI_AS
+=b.upc_unit collate Korean_Wansung_CI_AS
+
+order by a.upc_unit
+===============모바일 손님 지우기=========================
+select * from ERP_CUSTOMERINFORMATION where customer_number in ('27076399','27100899')
+
+--update ERP_CUSTOMERINFORMATION set customer_number='27076399' where customer_number='270763' 
+--update ERP_CUSTOMERINFORMATION set customer_number='27100899' where customer_number='271008' 
+===============ㅇ손님별 총 매출============================
+select Q.client_id,Q.net,c.customer_name 
+,c.owner_name,c.telephone_number,c.address,c.city,c.post_code
+From
+(
+select g.client_id,sum(g.net_sales)as net from t_tran_general g
+where (substring(g.merchant_id,1,5)>='k1501' and substring(g.merchant_id,1,5)>='k1509')
+and g.net_sales > 0
+group by g.client_id
+) Q left join [kbacms]..ERP_CUSTOMERINFORMATION c ON Q.client_id = c.customer_number
+order by Q.net desc
+
+===============키 만들기===================================
+main 70.28.99.54,1532에
+system db에 master 에 테이블====>T_MATCH_PO_POS_MASTER033_UNIT_CASE 에
+
+upc_unit	prod1	iname	desp	isize	unit_price	special_unit_price	sp_begin	sp_end	prod_code	s_unit	supp_code	supplier	reg_price	inv_price	net_price	deal	tax
+055000763900	NULL	NULL	NULL	NULL	NULL	NULL	NULL	NULL	CL9020000000900	NULL	NULL	NULL	NULL	NULL	NULL	NULL	NULL
+
+upc_unit
+055000763900
+prod_code
+CL9020000000900
+===============트리거======================================
+CREATE TABLE tg1
+(
+Emp_ID INT Identity,
+Emp_name Varchar(100),
+Emp_Sal Decimal (10,2)
+)
+
+INSERT INTO tg1 VALUES ('Anees',1000);
+INSERT INTO tg1 VALUES ('Rick',1200);
+INSERT INTO tg1 VALUES ('John',1100);
+INSERT INTO tg1 VALUES ('Stephen',1300);
+INSERT INTO tg1 VALUES ('Maria',1400);
+
+INSERT INTO tg1 VALUES ('Maria7',1400);
+select * from tg1
+select * from tg2
+
+CREATE TABLE tg2
+(
+Emp_ID int,
+Emp_name varchar(100),
+Emp_Sal decimal (10,2),
+Audit_Action varchar(100),
+Audit_Timestamp datetime
+)
+--drop trigger trgAfterInsert ON [tg1] 
+create TRIGGER trgAfterInsert ON [dbo].[tg1] 
+FOR INSERT
+AS
+	declare @empid int;
+	declare @empname varchar(100);
+	declare @empsal decimal(10,2);
+	declare @audit_action varchar(100);
+
+	select @empid=i.Emp_ID from inserted i;	
+	select @empname=i.Emp_Name from inserted i;	
+	select @empsal=i.Emp_Sal from inserted i;	
+	set @audit_action='Inserted Record -- After Insert Trigger.';
+
+	insert into tg2
+           (Emp_ID,Emp_Name,Emp_Sal,Audit_Action,Audit_Timestamp) 
+	values(@empid,@empname,@empsal,@audit_action,getdate());
+
+    delete from tg1 where emp_name=@empname;
+
+	PRINT 'AFTER INSERT trigger fired.'
+GO
+
+===============마감작업 에러시에 준비======================
+1)skb_closing의 모든 만들어진 자료 지운다
+2)db_pos 의 백업을 오리지날로 옴긴다, 그리고 백업을 지운다
+3)지점 서버의 general,detail,void,return_void 를 찾아서 지운다
+4)지점 서버의
+날짜를 그날로 했을때 심각해짐
+x1_save_data,z1_save_data,x1_credit_save,x1_cheque_save,x1_cash_input_save,TOBACCO_SALES
+을 찾아서 지우고 해야 한다
+날짜를 바꾸었다면 done care
+
+
+2015-10-21 09:07:11.000
+select top 100 * from TOBACCO_SALES order by cdate desc
+--delete from tobacco_sales where cdate='2015-10-21 09:07:11.000'
+select top 100 * from x1_cheque_save order by cdate desc
+--
+select top 100 * from x1_credit_save order by cdate desc
+--delete from x1_credit_save where cdate='2015-10-21 09:07:11.000'
+===================DAILY SALE WITH KEY==================
+declare @start_date datetime;
+declare @end_date datetime;
+set @start_date='10/09/2015' ;
+set @end_date ='10/09/2015';
+
+declare @hf_rtn decimal(10,2)
+declare @wt_rtn decimal(10,2)
+declare @mb_rtn decimal(10,2)
+
+declare @hf_tob decimal(10,2)
+declare @wt_tob decimal(10,2)
+declare @mb_tob decimal(10,2)
+
+declare @hf_tob_margin decimal(10,2)
+declare @wt_tob_margin decimal(10,2)
+declare @mb_tob_margin decimal(10,2)
+--------------------------------------------------------
+DECLARE @KEY1 VARCHAR(20)
+DECLARE @KEY2 VARCHAR(20)
+DECLARE @KEY3 CHAR(2)
+
+--SELECT TOP 1 * FROM [70.28.99.54].[MASTER]..[T_MATCH_PO_POS_MASTER033_UNIT_CASE]
+SELECT TOP 1 @KEY1=UPC_UNIT,@KEY2=PROD_CODE FROM [kbainfos064]..[T_MATCH_PO_POS_MASTER033_UNIT_CASE]
+SELECT @KEY1,@KEY2
+IF (@KEY1='055000763900' AND @KEY2='CL902000000090A')
+SELECT @KEY3 ='OK'
+ELSE
+SELECT @KEY3='NO'
+SELECT @KEY3
+-------------------------------------
+IF (@KEY3='OK')
+BEGIN
+	select @hf_rtn=0,@wt_rtn=0,@mb_rtn=0;
+	select @hf_tob=0,@wt_tob=0,@mb_tob=0;
+
+	begin
+	--tobacco and margin
+	select
+			@hf_tob=T.HF_tob,@wt_tob=T.WT_tob,@mb_tob=T.MB_tob
+			,@hf_tob_margin=(Select (HF_tob * (M.margin/100)) from t_margin M where M.prod1='TB')
+			,@wt_tob_margin=(Select (WT_tob * (M.margin/100)) from t_margin M where M.prod1='TB')
+			,@mb_tob_margin=(Select (MB_tob * (M.margin/100)) from t_margin M where M.prod1='TB')
+			from
+			(
+			select isnull([1],0) as HF_tob,isnull([3],0) as WT_tob,isnull([2],0) as MB_tob
+			from
+			( select (D.qty*D.uint_price) as a,D.store
+			  from t_tran_details D with (nolock)
+			  where D.merchant_id in (select merchant_id from t_tran_general where z1_date between @start_date and @end_date 
+				  and D.prod1='TB')
+			 ) piv 
+			pivot
+			(sum(a)
+			 for store in ([1],[3],[2])) as child
+			) as T
+	--return
+	select
+			@hf_rtn=R.HF_return,@wt_rtn=R.WT_return,@mb_rtn=R.MB_return
+			from
+			(
+			select isnull([1],0) as HF_return,isnull([3],0) as WT_return,isnull([2],0) as MB_return
+			from
+			(
+			SELECT D.credit as ret_net, D.store
+			  from t_tran_general D with (nolock)
+			  where D.z1_date between @start_date and @end_date
+			 ) piv 
+			pivot
+			(SUM(RET_net)
+			 for store in ([1],[3],[2])) as child
+			) as R
+
+	-- sale and margin
+			select
+			Q.prod1,Q.hf,Q.wt,Q.mb
+			,(Select (Q.hf * (M.margin/100)) from t_margin M where M.prod1=Q.prod1) as hf_mgn
+			,(Select (Q.mb * (M.margin/100)) from t_margin M where M.prod1=Q.prod1) as mb_mgn
+			,(Select (Q.wt * (M.margin/100)) from t_margin M where M.prod1=Q.prod1) as wt_mgn
+
+			, @hf_rtn as hf_return,@mb_rtn as mb_return,@wt_rtn as wt_return
+	        
+			,@hf_tob as hf_tob,@mb_tob as mb_tob,@wt_tob as wt_tob
+			,@hf_tob_margin as hf_tob_margin,@mb_tob_margin as mb_tob_margin,@wt_tob_margin as wt_tob_margin
+			from
+			(
+			select PROD1,isnull([1],0) as HF,isnull([3],0) as WT,isnull([2],0) as MB
+			from
+			( select D.prod1,(D.qty*D.uint_price) as a,D.store
+			  from t_tran_details D with (nolock)
+			  where D.merchant_id in (select merchant_id from t_tran_general where z1_date between @start_date and @end_date
+					  and D.prod1<>'TB' )
+			 ) piv 
+			pivot
+			(sum(a)
+			 for store in ([1],[3],[2])) as child
+			) as Q
+		   order by Q.prod1
+	end
+END
+ELSE
+BEGIN
+	SELECT @KEY3
+END
+===================daily sale procedure==================
+---한글 충돌 해결
+declare @start_date datetime;
+declare @end_date datetime;
+set @start_date='10/09/2015' ;
+set @end_date ='10/09/2015';
+
+declare @hf_rtn decimal(10,2)
+declare @wt_rtn decimal(10,2)
+declare @mb_rtn decimal(10,2)
+
+declare @hf_tob decimal(10,2)
+declare @wt_tob decimal(10,2)
+declare @mb_tob decimal(10,2)
+
+declare @hf_tob_margin decimal(10,2)
+declare @wt_tob_margin decimal(10,2)
+declare @mb_tob_margin decimal(10,2)
+
+
+select @hf_rtn=0,@wt_rtn=0,@mb_rtn=0;
+select @hf_tob=0,@wt_tob=0,@mb_tob=0;
+
+begin
+--tobacco and margin
+select
+        @hf_tob=T.HF_tob,@wt_tob=T.WT_tob,@mb_tob=T.MB_tob
+        ,@hf_tob_margin=(Select (HF_tob * (M.margin/100)) from t_margin M where M.prod1='TB')
+        ,@wt_tob_margin=(Select (WT_tob * (M.margin/100)) from t_margin M where M.prod1='TB')
+        ,@mb_tob_margin=(Select (MB_tob * (M.margin/100)) from t_margin M where M.prod1='TB')
+        from
+		(
+		select isnull([1],0) as HF_tob,isnull([3],0) as WT_tob,isnull([2],0) as MB_tob
+		from
+		( select (D.qty*D.uint_price) as a,D.store
+		  from t_tran_details D with (nolock)
+		  where D.merchant_id in (select merchant_id from t_tran_general where z1_date between @start_date and @end_date 
+              and D.prod1='TB')
+		 ) piv 
+		pivot
+		(sum(a)
+		 for store in ([1],[3],[2])) as child
+		) as T
+--return
+select
+		@hf_rtn=R.HF_return,@wt_rtn=R.WT_return,@mb_rtn=R.MB_return
+		from
+		(
+		select isnull([1],0) as HF_return,isnull([3],0) as WT_return,isnull([2],0) as MB_return
+		from
+		(
+		SELECT D.credit as ret_net, D.store
+		  from t_tran_general D with (nolock)
+		  where D.z1_date between @start_date and @end_date
+		 ) piv 
+		pivot
+		(SUM(RET_net)
+		 for store in ([1],[3],[2])) as child
+		) as R
+
+-- sale and margin
+		select
+		Q.prod1,Q.hf,Q.wt,Q.mb
+        ,(Select (Q.hf * (M.margin/100)) from t_margin M where M.prod1=Q.prod1) as hf_mgn
+        ,(Select (Q.mb * (M.margin/100)) from t_margin M where M.prod1=Q.prod1) as mb_mgn
+        ,(Select (Q.wt * (M.margin/100)) from t_margin M where M.prod1=Q.prod1) as wt_mgn
+
+        , @hf_rtn as hf_return,@mb_rtn as mb_return,@wt_rtn as wt_return
+        
+        ,@hf_tob as hf_tob,@mb_tob as mb_tob,@wt_tob as wt_tob
+        ,@hf_tob_margin as hf_tob_margin,@mb_tob_margin as mb_tob_margin,@wt_tob_margin as wt_tob_margin
+		from
+		(
+		select PROD1,isnull([1],0) as HF,isnull([3],0) as WT,isnull([2],0) as MB
+		from
+		( select D.prod1,(D.qty*D.uint_price) as a,D.store
+		  from t_tran_details D with (nolock)
+		  where D.merchant_id in (select merchant_id from t_tran_general where z1_date between @start_date and @end_date
+                  and D.prod1<>'TB' )
+		 ) piv 
+		pivot
+		(sum(a)
+		 for store in ([1],[3],[2])) as child
+		) as Q
+       order by Q.prod1
+end
+==================한글입력================================
+N'xxxx'
+==============모바일 담배 텍스 퀘리====================
+select 
+d.* from t_tran_details d left join t_tran_general g on d.merchant_id collate Korean_Wansung_CI_AS= g.merchant_id 
+where d.station='1' and d.prod1='TB'
+and (g.z1_date>='2016-06-01' and g.z1_date<='2016-06-30') 
+order by merchant_id desc
+---------------------------------------------
+select 
+d.* from t_tran_details d left join t_tran_general g on d.merchant_id collate Korean_Wansung_CI_AS= g.merchant_id 
+where d.store='2' and d.station='1' and d.prod1='TB'
+and (g.z1_date>='2016-08-01' and g.z1_date<='2016-08-31') 
+order by merchant_id desc
+===================================================
+SELECT a.*,b.tax,b.isize
+from Mobile_Tob_1503_1508 a left join T_POS_PRODUCT_1027 b on a.upc=b.upc_unit
+
+
+select 
+* from t_tran_details
+where station='1' and prod1='TB'
+and (SUBSTRING(MERCHANT_ID,2,6)>='160401'  and SUBSTRING(MERCHANT_ID,2,6)>='160430')
+order by merchant_id desc
+
+
+select 
+* from t_return_void
+where prod_code='tb'
+and idate >='2015-11-01 00:00:00.000' 
+
+==============모바일 REG 가격 비교(2015, 19============
+SELECT A.INAME,A.DESP,A.UNIT_PRICE,B.UNIT_PRICE,(A.UNIT_PRICE-B.UNIT_PRICE)
+FROM t_pos_product_13011 A LEFT JOIN t_pos_product_13011_JHL B ON A.UPC_UNIT=B.UPC_UNIT
+WHERE A.PATCH_NO=14503
+==============스페셜 엑셀에서 옮기============
+select * from t_special
+select * from tag_201510$
+delete from t_special
+insert into t_special
+select * from tag_201510$
+ino,prod1,upc_unit,supplier,iname,desp,isize,unit_price,special_unit_price,month,prod_code,month_name
+=========================
+EXEC sp_configure 'show advanced options', 1;
+GO
+RECONFIGURE;
+GO
+EXEC sp_configure 'Ad Hoc Distributed Queries', 1;
+GO
+RECONFIGURE;
+GO
+Insert into TESTkey Select * FROM OPENROWSET
+('Microsoft.Jet.OLEDB.4.0', 'Excel 8.0;Database=E:\key.xls;HDR=YES', 'SELECT * FROM [Sheet1$]')
+
+==ㅇ==================운영이사 매출 2015
+select top 1 * from [kbacms]..ERP_CUSTOMERINFORMATION
+select Q.client_id,C.owner_name,Q.s_sum 
+from
+(select client_id,sum(net_sales) s_sum from t_tran_general
+where 
+(substring(merchant_id,2,6)>='140901' and substring(merchant_id,2,6)<='150831') and
+client_id in
+('350666','316019','32368','350517','30485','8094','350310','350109','350289','22013','32030',
+'350614',
+'31218',
+'31687',
+'307446',
+'350181',
+'16168',
+'32391')
+group by client_id) as Q
+left join [kbacms]..ERP_CUSTOMERINFORMATION c ON Q.client_id=C.customer_number
+order by Q.s_sum desc
+====================스페셜 모음======================
+select
+desp,unit_price,tax,supplier,iname,isize,prod1,id,prod_code,seq,which,prod2,prod3,prod2_name,upc_unit,upc_box,upc_case
+,reg_price,inv_price,net_price,case_price,special_unit_price
+,margin,suppliercode,supp_code,boxpack,casepack,buyer,applied,point
+,sp_begin,sp_end,combo_price,remix,bogof,idate,expired,patch_no,sale_type,delete_flag
+from t_pos_product_13011
+where sp_begin>='2015-09-01 00:00:00.000'
+order by patch_no desc
+
+select
+desp,unit_price,tax,supplier,iname,isize,prod1,id,prod_code,seq,which,prod2,prod3,prod2_name,upc_unit,upc_box,upc_case
+,reg_price,inv_price,net_price,case_price,special_unit_price
+,margin,suppliercode,supp_code,boxpack,casepack,buyer,applied,point
+,sp_begin,sp_end,combo_price,remix,bogof,idate,expired,patch_no,sale_type,delete_flag
+from T_POS_PRODUCT_PATCH_BACKUP
+where sp_begin = '2015-08-01 00:00:00.000'
+order by patch_no desc
+
+select
+desp,unit_price,tax,supplier,iname,isize,prod1,id,prod_code,seq,which,prod2,prod3,prod2_name,upc_unit,upc_box,upc_case
+,reg_price,inv_price,net_price,case_price,special_unit_price
+,margin,suppliercode,supp_code,boxpack,casepack,buyer,applied,point
+,sp_begin,sp_end,combo_price,remix,bogof,idate,expired,patch_no,sale_type,delete_flag
+from T_POS_PRODUCT_PATCH_BACKUP
+order by patch_no desc
+=============special insert from t_pos_product-13011========================
+select prod1,upc_unit,supplier,iname,desp,isize,unit_price,special_unit_price,month,prod_code,month_name 
+from [216.191.202.86].kbainfos065.dbo.t_special
+
+insert into [216.191.202.86].kbainfos065.dbo.t_special
+(prod1,upc_unit,supplier,iname,desp,isize,unit_price,special_unit_price)
+select top 10 prod1,upc_unit,supplier,iname,desp,isize,unit_price,special_unit_price
+from [216.191.202.84].[KBA_POS].dbo.t_pos_product_13011 
+where patch_no=3165
+order by patch_no desc
+
+select top 1 * from [74.15.172.209].kba_pos.dbo.t_void
+=============================================================================
+select top 100
+prod1,upc_unit,upc_case,unit_price,special_unit_price,tax,supplier,iname,desp,isize,sp_begin,sp_end,idate,patch_no
+from t_pos_product_13011
+where prod1='pp' and sp_begin='2015-09-01 00:00:00.000'
+order by patch_no desc
+
+
+select top 100
+prod1,upc_unit,upc_case,unit_price,special_unit_price,tax,supplier,iname,desp,isize,sp_begin,sp_end,idate,patch_no
+from t_pos_product_13011
+where prod1='pp' and sp_begin='2015-09-01 00:00:00.000' and upc_unit like '%068274%'
+order by patch_no desc
+
+select top 100
+prod1,upc_unit,upc_case,unit_price,special_unit_price,tax,supplier,iname,desp,isize,sp_begin,sp_end,idate,patch_no
+from t_pos_product_13011
+order by patch_no desc
+==================업체 , 아이템=============================================
+select s.supplier,t.* from t_product t left join t_supplier s on t.supp_code=s.supp_code 
+where desp like '%minute%'
+====================지점 담배 재고 관련 table access / 지점섯버/ 메인 서버 연결==============================
+SELECT MAX(MERCHANT_ID) FROM TOBACCO_SALES_CORRECTION WHERE merchant_id like 'EX%'
+SELECT MAX(MERCHANT_ID) FROM TOBACCO_CREDIT WHERE BRANCH='" + branch_id+ "'
+SELECT MAX(MERCHANT_ID) FROM TOBACCO_TRANSFER WHERE BRANCH='" + branch_id.ToString() + "'
+SELECT MAX(MERCHANT_ID) FROM TOBACCO_RETURN
+SELECT MAX(MERCHANT_ID) FROM TOBACCO_IN
+SELECT MAX(LAST_Z1_DATE) FROM TOBACCO_CASHIER_CORRECTION
+SELECT STARTING_X1, ENDING_X1 FROM [Z1_SAVE_DATA] 
+WHERE Z1_NO IN (SELECT * FROM SPLIT('" + list_z1_list + "' , ',')) ORDER BY STATION
+SELECT top 1 Z1_LIST FROM [BRANCH_DAILY_REPORT] 
+WHERE dateadd(dd, -datediff(dd, date , 1), 1) = '" + temp.AddDays  (i).ToShortDateString() + "' AND BRANCH in (" + t_branch + ")
+SELECT STARTING_X1, ENDING_X1 FROM [Z1_SAVE_DATA] WHERE Z1_NO IN (SELECT * FROM SPLIT('" + list_z1_list + "' , ',')) ORDER BY STATION
+
+SELECT  SUM(ISNULL(B.D01, A.D01)) AS D01,SUM(ISNULL(B.D02, A.D02)) AS D02,SUM(ISNULL(B.D03, A.D03))AS D03,SUM(ISNULL(B.D04, A.D04)) AS D04
+,SUM(ISNULL(B.D05, A.D05)) AS D05,SUM(ISNULL(B.D06, A.D06)) AS D06,SUM(ISNULL(B.D07, A.D07)) AS D07,SUM(ISNULL(B.D08, A.D08)) AS D08
+,SUM(ISNULL(B.D09, A.D09)) AS D09,SUM(ISNULL(B.D10, A.D10)) AS D10,SUM(ISNULL(B.D11, A.D11))AS D11,SUM(ISNULL(B.D12, A.D12))AS D12
+,SUM(ISNULL(B.D13, A.D13))AS D13,SUM(ISNULL(B.D14, A.D14)) AS D14,SUM(ISNULL(B.D15, A.D15))AS D15,SUM(ISNULL(B.D16, A.D16)) AS D16
+, SUM(ISNULL(B.D17, A.D17)) AS D17 FROM TOBACCO_SALES A LEFT JOIN TOBACCO_CASHIER_CORRECTION B ON (A.TB_SEQ = B.TB_SEQ AND A.STORE = B.BRANCH AND A.STATION=B.STATION) 
+WHERE (A.X1_NO IN (SELECT IDAux FROM dbo.Split('" + list_x1_list + "', ',') AS Split_1)) 
+
+ SELECT SUM(D01) AS D01, SUM(D02) AS D02, SUM(D03) AS D03, SUM(D04) AS D04, SUM(D05) AS D05, SUM(D06) AS D06, SUM(D07) AS D07
+, SUM(D08) AS D08,SUM(D09) AS D09, SUM(D10) AS D10, SUM(D11) AS D11
+, SUM(D12) AS D12 ,SUM(D13) AS D13, SUM(D14) AS D14,SUM(D15) AS D15, SUM(D16) AS D16,SUM(D17) AS D17 FROM ";
+(SELECT * FROM TOBACCO_IN 
+PIVOT 
+( 
+SUM(QTY)
+FOR [PROD2] IN ([D01], [D02],[D03],[D04],[D05],[D06],[D07],[D08],[D09],[D10],[D11],[D12],[D13],[D14],[D15],[D16],[D17]) 
+)AS Q 
+) A 
+WHERE A.CDATE >='" + sd_week.ToShortDateString() + "' AND A.CDATE <= '" + ed_week.ToShortDateString() + "' AND BRANCH ='" + branch_id + "'
+================지점별 담배,비 담배 월별 집계================================
+select store,substring(merchant_id,2,4) as month,sum(qty*uint_price) as s_sum from t_tran_details
+where store='2' and prod1='tb' and substring(merchant_id,2,4)>='1501'
+group by store,substring(merchant_id,2,4)
+=============================================================================
+select top 100 * from BRANCH_DAILY_REPORT order by report_id desc
+select top 100 * from  dbo.T_TRAN_GENERAL where merchant_id='k15090633029'
+
+--update  T_TRAN_GENERAL set received=0,cur_chq=0 where merchant_id='K15090633029'
+--ID	INVOICE_NO	CNT_CHQ	CUR_CHQ	PST_CHQ	ANOTE	X1_NO	FLAG	CDATE	CLIENT_ID	CLIENT_NAME	STORE	STATION
+435	K15090633029	0.00	814.06	0.00		X133001030	0	2015-09-06 16:18:18.000	16168	Pik Wik Convenience	3	3
+
+
+select * from X1_SAVE_data order by x1_no desc
+select * from X1_CHEQUE_SAVE where x1_no='x133001030'
+--update X1_SAVE_data SET pos_cheque=0,cheque=0 where x1_no='X133001030'
+--delete from  X1_CHEQUE_SAVE where x1_no='x133001030'
+
+select top 100 * from BRANCH_DAILY_COIN_FOR_BILL order by id desc
+
+select * from BRANCH_DAILY_REPORT order by report_id desc
+
+select top 100 * from X1_CASH_INPUT_SAVE order by cdate desc
+--update X1_CASH_INPUT_SAVE set anything2=814.06 where x1_no='X133001030'
+
+
+
+
+select * from X1_CREDIT_CARD_SAVE order by cdate desc where invoice_no='R15092339006'
+select * from X1_CREDIT_SAVE  order by cdate desc  where invoice_no='K15092334026'
+select top 100 * from t_tran_general where return_invoice_no='R15092339006' order by merchant_id desc
+select top 500 * from t_tran_general where substring(merchant_id,1,7)='k150923' order by merchant_id desc
+
+select * from X1_CREDIT_SAVE  where invoice_no='K15092334026'
+select * from X1_SAVE_DATA order by x1_date desc
+====================
+admin:이승여-pc\ma
+====================
+USE DB
+DECLARE @ObjectOwnerOrSchema NVARCHAR(128)
+DECLARE @ObjectName NVARCHAR(128)
+ 
+SET @ObjectOwnerOrSchema = 'dbo'
+SET @ObjectName = 'Stored_Procedure'
+ 
+DECLARE @i INT
+DECLARE @ObjectDataLength INT
+DECLARE @ContentOfEncryptedObject NVARCHAR(MAX)
+DECLARE @ContentOfDecryptedObject NVARCHAR(MAX)
+DECLARE @ContentOfFakeObject NVARCHAR(MAX)
+DECLARE @ContentOfFakeEncryptedObject NVARCHAR(MAX)
+DECLARE @ObjectType NVARCHAR(128)
+DECLARE @ObjectID INT
+ 
+SET NOCOUNT ON
+ 
+SET @ObjectID = OBJECT_ID('[' + @ObjectOwnerOrSchema + '].[' + @ObjectName + ']')
+ 
+-- Check that the provided object exists in the database.
+IF @ObjectID IS NULL
+BEGIN
+    RAISERROR('The object name or schema provided does not exist in the database', 16, 1)
+    RETURN
+END
+ 
+-- Check that the provided object is encrypted.
+IF NOT EXISTS(SELECT TOP 1 * FROM syscomments WHERE id = @ObjectID AND encrypted = 1)
+BEGIN
+    RAISERROR('The object provided exists however it is not encrypted. Aborting.', 16, 1)
+    RETURN
+END
+ 
+ 
+ 
+-- Determine the type of the object
+IF OBJECT_ID('[' + @ObjectOwnerOrSchema + '].[' + @ObjectName + ']', 'PROCEDURE') IS NOT NULL
+    SET @ObjectType = 'PROCEDURE'
+ELSE
+    IF OBJECT_ID('[' + @ObjectOwnerOrSchema + '].[' + @ObjectName + ']', 'TRIGGER') IS NOT NULL
+        SET @ObjectType = 'TRIGGER'
+    ELSE
+        IF OBJECT_ID('[' + @ObjectOwnerOrSchema + '].[' + @ObjectName + ']', 'VIEW') IS NOT NULL
+            SET @ObjectType = 'VIEW'
+        ELSE
+            SET @ObjectType = 'FUNCTION'
+ 
+-- Get the binary representation of the object- syscomments no longer holds
+-- the content of encrypted object.
+SELECT TOP 1 @ContentOfEncryptedObject = imageval
+FROM sys.sysobjvalues
+WHERE objid = OBJECT_ID('[' + @ObjectOwnerOrSchema + '].[' + @ObjectName + ']')
+        AND valclass = 1 and subobjid = 1
+ 
+SET @ObjectDataLength = DATALENGTH(@ContentOfEncryptedObject)/2
+ 
+ 
+-- We need to alter the existing object and make it into a dummy object
+-- in order to decrypt its content. This is done in a transaction
+-- (which is later rolled back) to ensure that all changes have a minimal
+-- impact on the database.
+SET @ContentOfFakeObject = N'ALTER ' + @ObjectType + N' [' + @ObjectOwnerOrSchema + N'].[' + @ObjectName + N'] WITH ENCRYPTION AS'
+ 
+WHILE DATALENGTH(@ContentOfFakeObject)/2 < @ObjectDataLength
+BEGIN
+        IF DATALENGTH(@ContentOfFakeObject)/2 + 4000 < @ObjectDataLength
+                SET @ContentOfFakeObject = @ContentOfFakeObject + REPLICATE(N'-', 4000)
+        ELSE
+                SET @ContentOfFakeObject = @ContentOfFakeObject + REPLICATE(N'-', @ObjectDataLength - (DATALENGTH(@ContentOfFakeObject)/2))
+END
+ 
+-- Since we need to alter the object in order to decrypt it, this is done
+-- in a transaction
+SET XACT_ABORT OFF
+BEGIN TRAN
+ 
+EXEC(@ContentOfFakeObject)
+ 
+IF @@ERROR <> 0
+        ROLLBACK TRAN
+ 
+-- Get the encrypted content of the new "fake" object.
+SELECT TOP 1 @ContentOfFakeEncryptedObject = imageval
+FROM sys.sysobjvalues
+WHERE objid = OBJECT_ID('[' + @ObjectOwnerOrSchema + '].[' + @ObjectName + ']')
+        AND valclass = 1 and subobjid = 1
+ 
+IF @@TRANCOUNT > 0
+        ROLLBACK TRAN
+ 
+-- Generate a CREATE script for the dummy object text.
+SET @ContentOfFakeObject = N'CREATE ' + @ObjectType + N' [' + @ObjectOwnerOrSchema + N'].[' + @ObjectName + N'] WITH ENCRYPTION AS'
+ 
+WHILE DATALENGTH(@ContentOfFakeObject)/2 < @ObjectDataLength
+BEGIN
+        IF DATALENGTH(@ContentOfFakeObject)/2 + 4000 < @ObjectDataLength
+                SET @ContentOfFakeObject = @ContentOfFakeObject + REPLICATE(N'-', 4000)
+        ELSE
+                SET @ContentOfFakeObject = @ContentOfFakeObject + REPLICATE(N'-', @ObjectDataLength - (DATALENGTH(@ContentOfFakeObject)/2))
+END
+ 
+ 
+SET @i = 1
+ 
+--Fill the variable that holds the decrypted data with a filler character
+SET @Co
+======================================================================
+data transfer
+======================================================================
+USE [KBAPOS]
+GO
+/****** Object:  StoredProcedure [dbo].[daily_tras_data_transfer]    Script Date: 09/09/2015 16:08:04 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[daily_tras_data_transfer]  
+AS
+
+
+
+declare @mobile_db as varchar(50),
+		@westmall_db as varchar(50),
+		@orfus_db as varchar(50),
+		@return_table as varchar(20),
+		@void_table as varchar(20),
+		@general_table as varchar(20),
+		@details_table as varchar(20),
+		@max_id_orfus as varchar(20),
+		@max_id_mobile as varchar(20),
+		@max_id_westmall as varchar(20),
+		@var_station as int,
+		@cmdtxt as varchar(255),
+		@current_date as varchar(100)
+
+	/*select @max_id_orfus = max(merchant_id) from t_return_void
+	where merchant_id like 'r%' and store = 1;*/
+	select @max_id_mobile = max(merchant_id) from t_return_void
+	where merchant_id like 'r%' and store = 2;
+	select @max_id_westmall = max(merchant_id) from t_return_void
+	where merchant_id like 'r%' and store = 3;
+
+select @current_date = convert(varchar, getdate(), 109)
+
+begin transaction
+
+	/*insert into T_return_void
+	   select * from [76.66.215.45].kba_pos.dbo.t_return_void
+	where store = 1 and station >= 8 and merchant_id like 'r%' and merchant_id > @max_id_orfus 
+
+	IF @@ERROR <> 0 GOTO PROBLEM
+*/
+	insert into T_return_void
+	   select * from [74.15.172.209].kba_pos.dbo.t_return_void
+	where store = 2 and station >= 8 and merchant_id like 'r%' and merchant_id > @max_id_mobile 
+
+	IF @@ERROR <> 0 GOTO PROBLEM
+
+	insert into T_return_void
+	   select * from [216.191.202.84].kba_pos.dbo.t_return_void
+	where store = 3 and station >= 8 and merchant_id like 'r%' and merchant_id > @max_id_westmall 
+
+	IF @@ERROR <> 0 GOTO PROBLEM
+
+	/***
+	transaction general , details, void
+	*/
+	/*set @var_station = 1
+	while @var_station < 8
+	begin 
+		select @max_id_orfus = max(merchant_id) from t_tran_general
+		where store = 1 and station = @var_station 
+
+		if @max_id_orfus is not null
+		begin
+		    insert into t_tran_general
+			   select * from [76.66.215.45].kba_pos.dbo.t_tran_general
+			where store = 1 and station = @var_station and merchant_id > @max_id_orfus
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+			insert into t_tran_details
+			   select * from [76.66.215.45].kba_pos.dbo.t_tran_details
+			where store = 1 and station = @var_station and merchant_id > @max_id_orfus
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+			insert into t_void
+			   select * from [76.66.215.45].kba_pos.dbo.t_void
+			where store = 1 and station = @var_station and merchant_id > @max_id_orfus
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+		end
+		set @var_station = @var_station + 1
+
+	end*/
+	set @var_station = 1
+	while @var_station < 8
+	begin 
+		select @max_id_mobile = max(merchant_id) from t_tran_general
+		where store = 2 and station = @var_station 
+
+		if @max_id_mobile is not null
+		begin
+			insert into t_tran_general
+			   select * from [74.15.172.209].kba_pos.dbo.t_tran_general
+			where store = 2 and station = @var_station and merchant_id > @max_id_mobile
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+			insert into t_tran_details
+			   select * from [74.15.172.209].kba_pos.dbo.t_tran_details
+			where store = 2 and station = @var_station and merchant_id > @max_id_mobile
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+			insert into t_void
+			   select * from [74.15.172.209].kba_pos.dbo.t_void
+			where store = 2 and station = @var_station and merchant_id > @max_id_mobile
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+		end
+		set @var_station = @var_station + 1
+
+	end
+
+	set @var_station = 1
+	while @var_station < 8
+	begin 
+		select @max_id_westmall = max(merchant_id) from t_tran_general
+		where store = 3 and station = @var_station 
+
+		if @max_id_westmall is not null
+		begin
+			insert into t_tran_general
+			   select * from [216.191.202.84].kba_pos.dbo.t_tran_general
+			where store = 3 and station = @var_station and merchant_id > @max_id_westmall
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+			insert into t_tran_details
+			   select * from [216.191.202.84].kba_pos.dbo.t_tran_details
+			where store = 3 and station = @var_station and merchant_id > @max_id_westmall
+
+			insert into t_void
+			   select * from [216.191.202.84].kba_pos.dbo.t_void
+			where store = 3 and station = @var_station and merchant_id > @max_id_westmall
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+		end
+		set @var_station = @var_station + 1
+
+	end
+commit transaction
+
+return 0
+
+PROBLEM:
+ROLLBACK TRANSACTION
+
+RETURN 1
+==================================================================================
+sales
+===================================================================================
+USE [KBAPOS]
+GO
+/****** Object:  StoredProcedure [dbo].[ISP_DD_SALES_A_99]    Script Date: 09/09/2015 16:12:15 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure [dbo].[ISP_DD_SALES_A_99]
+@start_date datetime,
+@end_date datetime  
+AS
+declare @hf_rtn decimal(10,2)
+declare @wt_rtn decimal(10,2)
+declare @mb_rtn decimal(10,2)
+
+declare @hf_tob decimal(10,2)
+declare @wt_tob decimal(10,2)
+declare @mb_tob decimal(10,2)
+
+declare @hf_tob_margin decimal(10,2)
+declare @wt_tob_margin decimal(10,2)
+declare @mb_tob_margin decimal(10,2)
+
+
+select @hf_rtn=0,@wt_rtn=0,@mb_rtn=0;
+select @hf_tob=0,@wt_tob=0,@mb_tob=0;
+
+begin
+--tobacco and margin
+select
+        @hf_tob=T.HF_tob,@wt_tob=T.WT_tob,@mb_tob=T.MB_tob
+        ,@hf_tob_margin=(Select (HF_tob * (M.margin/100)) from t_margin M where M.prod1='TB')
+        ,@wt_tob_margin=(Select (WT_tob * (M.margin/100)) from t_margin M where M.prod1='TB')
+        ,@mb_tob_margin=(Select (MB_tob * (M.margin/100)) from t_margin M where M.prod1='TB')
+        from
+		(
+		select isnull([1],0) as HF_tob,isnull([3],0) as WT_tob,isnull([2],0) as MB_tob
+		from
+		( select (D.qty*D.uint_price) as a,D.store
+		  from t_tran_details D with (nolock)
+		  where D.merchant_id in (select merchant_id from t_tran_general where z1_date between @start_date and @end_date 
+              and D.prod1='TB')
+		 ) piv 
+		pivot
+		(sum(a)
+		 for store in ([1],[3],[2])) as child
+		) as T
+--return
+select
+		@hf_rtn=R.HF_return,@wt_rtn=R.WT_return,@mb_rtn=R.MB_return
+		from
+		(
+		select isnull([1],0) as HF_return,isnull([3],0) as WT_return,isnull([2],0) as MB_return
+		from
+		(
+		SELECT D.credit as ret_net, D.store
+		  from t_tran_general D with (nolock)
+		  where D.z1_date between @start_date and @end_date
+		 ) piv 
+		pivot
+		(SUM(RET_net)
+		 for store in ([1],[3],[2])) as child
+		) as R
+
+-- sale and margin
+		select
+		Q.prod1,Q.hf,Q.wt,Q.mb
+        ,(Select (Q.hf * (M.margin/100)) from t_margin M where M.prod1=Q.prod1) as hf_mgn
+        ,(Select (Q.mb * (M.margin/100)) from t_margin M where M.prod1=Q.prod1) as mb_mgn
+        ,(Select (Q.wt * (M.margin/100)) from t_margin M where M.prod1=Q.prod1) as wt_mgn
+
+        , @hf_rtn as hf_return,@mb_rtn as mb_return,@wt_rtn as wt_return
+        
+        ,@hf_tob as hf_tob,@mb_tob as mb_tob,@wt_tob as wt_tob
+        ,@hf_tob_margin as hf_tob_margin,@mb_tob_margin as mb_tob_margin,@wt_tob_margin as wt_tob_margin
+		from
+		(
+		select PROD1,isnull([1],0) as HF,isnull([3],0) as WT,isnull([2],0) as MB
+		from
+		( select D.prod1,(D.qty*D.uint_price) as a,D.store
+		  from t_tran_details D with (nolock)
+		  where D.merchant_id in (select merchant_id from t_tran_general where z1_date between @start_date and @end_date
+                  and D.prod1<>'TB' )
+		 ) piv 
+		pivot
+		(sum(a)
+		 for store in ([1],[3],[2])) as child
+		) as Q
+       order by Q.prod1
+end
+
+===========================================================
+back up
+===========================================================
+USE [KBAPOS]
+GO
+/****** Object:  StoredProcedure [dbo].[isp_admin_backup]    Script Date: 09/09/2015 16:13:14 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+CREATE procedure [dbo].[isp_admin_backup](
+@name varchar(50) 
+)  
+AS
+Begin
+--DECLARE @name VARCHAR(50) -- database name
+DECLARE @path VARCHAR(256) -- path for backup files
+DECLARE @fileName VARCHAR(256) -- filename for backup
+DECLARE @fileDate VARCHAR(20) -- used for file name
+
+SET @path = 'd:\dbbackup\'
+
+SELECT @fileDate = CONVERT(VARCHAR(20),GETDATE(),112)
+
+DECLARE db_cursor CURSOR FOR
+SELECT name
+FROM master.dbo.sysdatabases
+--WHERE name NOT IN ('master','model','msdb','tempdb')
+WHERE name =@name
+
+
+OPEN db_cursor
+FETCH NEXT FROM db_cursor INTO @name
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+SET @fileName = @path + @name + '_' + @fileDate + '.BAK'
+BACKUP DATABASE @name TO DISK = @fileName
+
+FETCH NEXT FROM db_cursor INTO @name
+END
+
+CLOSE db_cursor
+DEALLOCATE db_cursor
+End
+
+====================================================================
+patch data
+====================================================================
+select top 200 * from t_pos_product_13011 order by patch_no desc
+'2015-09-01 00:00:00.000'
+select  * from t_pos_product_13011 where upc_unit='059290573220'
+
+select  * from t_pos_product_13011 where sp_begin='2015-09-01 00:00:00.000'
+order by patch_no desc
+
+select  * from t_pos_product_13011 where sp_begin>='2015-03-01' and sp_begin<='2015-03-31'
+order by patch_no desc
+
+select  * from t_pos_product_13011 where substring(sp_begin,1,7)='2015-01-01'
+order by patch_no desc
+
+select * from t_pos_product_PATCH_BACKUP 
+where sp_begin>='2015-08-01' and sp_begin<='2015-08-02'
+order by patch_no desc
+===========================================================
+웨스트 및 모바일 SMALLWARE 매출 비교
+===========================================================
+select q.store,q.iname,sum(q.qty) as sqty,sum(q.sales) as sales from
+(
+select d.store,d.prod1,d.iname,d.qty,d.uint_price,(d.qty*d.uint_price) as sales from t_tran_details d
+ left join t_tran_general g on d.merchant_id=g.merchant_id
+where (z1_date >='2015-09-01' and z1_date <='2015-09-12') and d.prod1='sm'
+--where substring(Merchant_id,1,7)>='k1500901' and substring(Merchant_id,1,7)<='k15009012' 
+) as Q Group by Q.store,Q.iname
+order by Q.store,sum(q.qty),Q.iname
+
+*************************************************************************
+트리거 13011 지우기
+************************************************************************
+create TRIGGER trgAfterInsert99 ON [dbo].[T_POS_PRODUCT_13011] 
+FOR INSERT
+AS
+DECLARE @PATCH_NO9 INT
+SELECT TOP 1 @PATCH_NO9=PATCH_NO FROM T_POS_PRODUCT_13011 ORDER BY PATCH_NO DESC
+
+DELETE FROM T_POS_PRODUCT_13011 WHERE PATCH_NO=@PATCH_NO9
+**********************************************************************8888
+트리거 Z1 지우기
+*********************************************************************8
+create TRIGGER trgAfterInsert99_Z1 ON [dbo].[Z1_SAVE_DATA] 
+FOR INSERT
+AS
+DECLARE @Z1_NO9 VARCHAR(20)
+SELECT TOP 1 @Z1_NO9=Z1_NO FROM Z1_SAVE_DATA ORDER BY Z1_DATE DESC
+DELETE FROM Z1_SAVE_DATA WHERE Z1_NO=@Z1_NO9 
+**********************************************************************8888
+트리거 X1 지우기
+*********************************************************************8
+create TRIGGER trgAfterInsert99_X1 ON [dbo].[X1_SAVE_DATA] 
+FOR INSERT
+AS
+DECLARE @X1_NO9 VARCHAR(20)
+SELECT TOP 1 @X1_NO9=Z1_NO FROM X1_SAVE_DATA ORDER BY X1_DATE DESC
+DELETE FROM X1_SAVE_DATA WHERE X1_NO=@Z1_NO9 
+**************************************************************
+데이타 트렌스퍼(암호)
+**************************************************************
+**************************************************************
+**************************************************************
+DECLARE @UPC NVARCHAR(50)
+DECLARE @PROD_CODE2 NVARCHAR(50)
+SELECT @UPC=UPC,@PROD_CODE2=PROD_CODE 
+FROM [216.191.202.84].TEMPDB.DBO.T_KBATEMP
+IF (@UPC='055000763900' AND @PROD_CODE2='CL9020000000900')
+BEGIN 
+**************************************************************
+**************************************************************
+**************************************************************
+**************************************************************
+SELECT * FROM T_MATCH_PO_POS_MASTER033_UNIT_CASE
+INSERT INTO T_MATCH_PO_POS_MASTER033_UNIT_CASE
+(UPC_UNIT,PROD_CODE)
+VALUES('055000763900','CL9020000000900')넣었다
+
+--SELECT * FROM [master].dbo.T_MATCH_PO_POS_MASTER033_UNIT_CAse
+where prod_code='CL9020000000900'
+로 셀렉트 한다
+**************************************************************
+isp_t_pur_ord_insert_XML_081---자료입려
+isp_t_pur_ord_insert_XML_091_A---진짜
+ISP_PO_WIN_LIST_091_AA --  자료리스트
+
+ISP_PO_WIN_SAVELIST_091_AA
+
+ISP_PO_WIN_LIST_091_AA
+**************************************************************
+**************************************************************
+다른서버로으 접속은 이것이 된다
+select top 10 * from [216.191.202.84].kba_pos.dbo.t_pos_product_1027   WITH(NOLOCK)
+where prod_code='CL9020000000900'
+**************************************************************
+**************************************************************
+**************************************************************
+**************************************************************
+**************************************************************
+CREATE PROCEDURE [dbo].[daily_tras_data_transfer]  
+AS
+
+
+
+declare @mobile_db as varchar(50),
+		@westmall_db as varchar(50),
+		@orfus_db as varchar(50),
+		@return_table as varchar(20),
+		@void_table as varchar(20),
+		@general_table as varchar(20),
+		@details_table as varchar(20),
+		@max_id_orfus as varchar(20),
+		@max_id_mobile as varchar(20),
+		@max_id_westmall as varchar(20),
+		@var_station as int,
+		@cmdtxt as varchar(255),
+		@current_date as varchar(100)
+
+	/*select @max_id_orfus = max(merchant_id) from t_return_void
+	where merchant_id like 'r%' and store = 1;*/
+	select @max_id_mobile = max(merchant_id) from t_return_void
+	where merchant_id like 'r%' and store = 2;
+	select @max_id_westmall = max(merchant_id) from t_return_void
+	where merchant_id like 'r%' and store = 3;
+
+select @current_date = 'Oct 20 2015 10:04:48:270AM' --convert(varchar, getdate(), 109)
+
+begin transaction
+
+	/*insert into T_return_void
+	   select * from [76.66.215.45].kba_pos.dbo.t_return_void
+	where store = 1 and station >= 8 and merchant_id like 'r%' and merchant_id > @max_id_orfus 
+
+	IF @@ERROR <> 0 GOTO PROBLEM
+*/
+	insert into T_return_void
+	   select * from [74.15.172.209].kba_pos.dbo.t_return_void
+	where store = 2 and station >= 8 and merchant_id like 'r%' and merchant_id > @max_id_mobile 
+
+	IF @@ERROR <> 0 GOTO PROBLEM
+
+	insert into T_return_void
+	   select * from [216.191.202.84].kba_pos.dbo.t_return_void
+	where store = 3 and station >= 8 and merchant_id like 'r%' and merchant_id > @max_id_westmall 
+
+	IF @@ERROR <> 0 GOTO PROBLEM
+
+	/***
+	transaction general , details, void
+	*/
+	/*set @var_station = 1
+	while @var_station < 8
+	begin 
+		select @max_id_orfus = max(merchant_id) from t_tran_general
+		where store = 1 and station = @var_station 
+
+		if @max_id_orfus is not null
+		begin
+		    insert into t_tran_general
+			   select * from [76.66.215.45].kba_pos.dbo.t_tran_general
+			where store = 1 and station = @var_station and merchant_id > @max_id_orfus
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+			insert into t_tran_details
+			   select * from [76.66.215.45].kba_pos.dbo.t_tran_details
+			where store = 1 and station = @var_station and merchant_id > @max_id_orfus
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+			insert into t_void
+			   select * from [76.66.215.45].kba_pos.dbo.t_void
+			where store = 1 and station = @var_station and merchant_id > @max_id_orfus
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+		end
+		set @var_station = @var_station + 1
+
+	end*/
+	set @var_station = 1
+	while @var_station < 8
+	begin 
+		select @max_id_mobile = max(merchant_id) from t_tran_general
+		where store = 2 and station = @var_station 
+
+		if @max_id_mobile is not null
+		begin
+			insert into t_tran_general
+			   select * from [74.15.172.209].kba_pos.dbo.t_tran_general
+			where store = 2 and station = @var_station and merchant_id > @max_id_mobile
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+			insert into t_tran_details
+			   select * from [74.15.172.209].kba_pos.dbo.t_tran_details
+			where store = 2 and station = @var_station and merchant_id > @max_id_mobile
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+			insert into t_void
+			   select * from [74.15.172.209].kba_pos.dbo.t_void
+			where store = 2 and station = @var_station and merchant_id > @max_id_mobile
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+		end
+		set @var_station = @var_station + 1
+
+	end
+
+	set @var_station = 1
+	while @var_station < 8
+	begin 
+		select @max_id_westmall = max(merchant_id) from t_tran_general
+		where store = 3 and station = @var_station 
+
+		if @max_id_westmall is not null
+		begin
+			insert into t_tran_general
+			   select * from [216.191.202.84].kba_pos.dbo.t_tran_general
+			where store = 3 and station = @var_station and merchant_id > @max_id_westmall
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+			insert into t_tran_details
+			   select * from [216.191.202.84].kba_pos.dbo.t_tran_details
+			where store = 3 and station = @var_station and merchant_id > @max_id_westmall
+
+			insert into t_void
+			   select * from [216.191.202.84].kba_pos.dbo.t_void
+			where store = 3 and station = @var_station and merchant_id > @max_id_westmall
+
+			IF @@ERROR <> 0 GOTO PROBLEM
+
+		end
+		set @var_station = @var_station + 1
+
+	end
+commit transaction
+
+return 0
+
+PROBLEM:
+ROLLBACK TRANSACTION
+
+RETURN 1
+
+
